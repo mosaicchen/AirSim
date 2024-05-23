@@ -402,3 +402,6 @@ PythonClient/docs/_build
 
 # clangd generated folder, for e.g. from VSCode clangd extension
 .cache/
+
+# Dont Update Unreal Project for a lot changes in there
+/Unreal/Environments/Blocks//
