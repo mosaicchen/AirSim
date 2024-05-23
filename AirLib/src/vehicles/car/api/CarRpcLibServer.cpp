@@ -52,6 +52,14 @@ namespace airlib
         (static_cast<rpc::server*>(getServer()))->bind("getCarControls", [&](const std::string& vehicle_name) -> CarRpcLibAdaptors::CarControls {
             return CarRpcLibAdaptors::CarControls(getVehicleApi(vehicle_name)->getCarControls());
         });
+        
+
+        (static_cast<rpc::server*>(getServer()))->bind("setCarMCMsg", [&](const CarRpcLibAdaptors::CarMCMsg& msg, const std::string& vehicle_name) -> void {
+            getVehicleApi(vehicle_name)->setCarMCMsg(msg.to());
+        });
+        (static_cast<rpc::server*>(getServer()))->bind("getCarMCMsg", [&](const std::string& vehicle_name) -> CarRpcLibAdaptors::CarMCMsg {
+            return CarRpcLibAdaptors::CarMCMsg(getVehicleApi(vehicle_name)->getCarMCMsg());
+        });
     }
 
     //required for pimpl

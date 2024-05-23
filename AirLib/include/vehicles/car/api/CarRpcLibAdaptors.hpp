@@ -86,6 +86,29 @@ namespace airlib_rpclib
                     speed, gear, rpm, maxrpm, handbrake, kinematics_estimated.to(), timestamp);
             }
         };
+
+        struct CarMCMsg
+        {
+            std::string msg;
+            uint64_t timestamp;
+
+            MSGPACK_DEFINE_MAP(msg, timestamp);
+
+            CarMCMsg()
+            {
+            }
+
+            CarMCMsg(const msr::airlib::CarApiBase::CarMCMsg& s)
+            {
+                msg = s.msg;
+                timestamp = s.timestamp;
+            }
+            msr::airlib::CarApiBase::CarMCMsg to() const
+            {
+                return msr::airlib::CarApiBase::CarMCMsg(
+                    msg, timestamp);
+            }
+        };
     };
 }
 } //namespace

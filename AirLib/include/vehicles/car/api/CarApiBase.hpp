@@ -84,6 +84,27 @@ namespace airlib
             }
         };
 
+        struct CarMCMsg
+        {
+            string msg;
+            uint64_t timestamp;
+
+            CarMCMsg()
+            {
+            }
+
+            CarMCMsg(string msg_val, uint64_t timestamp_val)
+                :  msg(msg_val), timestamp(timestamp_val)
+            {
+            }
+
+            //shortcuts
+            const string& getMsg() const
+            {
+                return msg;
+            }
+        };
+
     public:
         // TODO: Temporary constructor for the Unity implementation which does not use the new Sensor Configuration Settings implementation.
         //CarApiBase() {}
@@ -143,6 +164,14 @@ namespace airlib
         virtual void updateCarState(const CarState& state) = 0;
         virtual const CarState& getCarState() const = 0;
         virtual const CarControls& getCarControls() const = 0;
+
+        virtual void setCarMCMsg(const CarMCMsg& msg) = 0;
+        virtual const CarMCMsg& getCarMCMsg() const = 0;
+
+        virtual void sendCarMCMsg(const CarMCMsg& msg) = 0;
+        virtual const CarMCMsg getRecvCarMCMsg() const = 0;
+        virtual const CarMCMsg getSentCarMCMsg() const = 0;
+
 
         virtual ~CarApiBase() = default;
 

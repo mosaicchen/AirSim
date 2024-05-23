@@ -81,4 +81,21 @@ void CarPawnApi::update()
     vehicle_api_->update();
 }
 
+// msr::airlib::CarApiBase::CarMCMsg CarPawnApi::getCarMCMsg() const
+// {
+//     // msr::airlib::CarApiBase::CarMCMsg msg(
+//     //     sentMCMsg_,
+//     //     vehicle_api_->clock()->nowNanos());
+    
+//     // UE_LOG(LogTemp, Log, TEXT("send MC Msg: %s"), *msg.msg.c_str());
+//     // return msg;
+//        return vehicle_api_->getCarMCMsg();
+// }
+
+// void CarPawnApi::setCarMCMsg(const msr::airlib::CarApiBase::CarMCMsg& msg)
+// {
+//     recvMCMsg_ = msg;
+//     UE_LOG(LogTemp, Log, TEXT("receive MC Msg: %s"), *msg.msg.c_str());
+// }
+
 CarPawnApi::~CarPawnApi() = default;

@@ -88,11 +88,37 @@ namespace airlib
             return last_controls_;
         }
 
+        virtual void setCarMCMsg(const CarMCMsg& msg) override
+        {
+            recvMCMsg_= msg;
+        }
+
+        virtual const CarMCMsg& getCarMCMsg() const override
+        {
+            return sentMCMsg_;
+        }
+
+        virtual void sendCarMCMsg(const CarMCMsg& msg) override
+        {
+            sentMCMsg_ = msg;
+        }
+
+        virtual const CarMCMsg getRecvCarMCMsg() const override
+        {
+            return recvMCMsg_;
+        }
+        virtual const CarMCMsg getSentCarMCMsg() const override
+        {
+            return sentMCMsg_;
+        }
+
     private:
         bool api_control_enabled_ = false;
         GeoPoint home_geopoint_;
         CarControls last_controls_;
         CarState last_car_state_;
+        CarMCMsg recvMCMsg_;
+        CarMCMsg sentMCMsg_;
     };
 }
 }

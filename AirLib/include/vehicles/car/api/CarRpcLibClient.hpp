@@ -24,6 +24,8 @@ namespace airlib
         void setCarControls(const CarApiBase::CarControls& controls, const std::string& vehicle_name = "");
         CarApiBase::CarState getCarState(const std::string& vehicle_name = "");
         CarApiBase::CarControls getCarControls(const std::string& vehicle_name = "");
+        void setCarMCMsg(const CarApiBase::CarMCMsg& msg, const std::string& vehicle_name = "");
+        CarApiBase::CarMCMsg getCarMCMsg();
         virtual ~CarRpcLibClient(); //required for pimpl
     };
 }

@@ -39,6 +39,34 @@ void ASimModeCar::continueForFrames(uint32_t frames)
     pause(false);
 }
 
+FString ASimModeCar::GetMCMsg(const FString& vehicle_name)
+{
+    //FString to std::string
+    std::string vname(TCHAR_TO_UTF8(*vehicle_name));
+
+    auto sim_api = getVehicleSimApi(vname);
+    auto car_sim_api = static_cast<CarPawnSimApi*>(sim_api);
+    //auto car_api = car_sim_api->getPawnApi();
+    auto msg = car_sim_api->getVehicleApi()->getCarMCMsg();
+    //std::string to FString
+    FString fMsg = FString(msg.msg.c_str());
+    return fMsg;
+}
+
+void ASimModeCar::SendMCMsg(const FString& msg, const FString& vehicle_name)
+{
+    //FString to std::string
+    std::string vname(TCHAR_TO_UTF8(*vehicle_name));
+    auto sim_api = getVehicleSimApi(vname);
+    auto car_sim_api = static_cast<CarPawnSimApi*>(sim_api);
+    auto car_api = car_sim_api->getPawnApi();
+
+    msr::airlib::CarApiBase::CarMCMsg MCMsg(
+        msg,
+        car_sim_api->getVehicleApi()->clock()->nowNanos());
+    car_sim_api->getVehicleApi()->sendCarMCMsg(MCMsg);
+}
+
 void ASimModeCar::setupClockSpeed()
 {
     Super::setupClockSpeed();
@@ -73,6 +101,17 @@ void ASimModeCar::Tick(float DeltaSeconds)
 
             frame_countdown_enabled_ = false;
         }
+    }
+
+    if (bShowMCMsg) {
+        auto sim_api = getVehicleSimApi();
+        auto car_sim_api = static_cast<CarPawnSimApi*>(sim_api);
+        //auto car_api = car_sim_api->getPawnApi();
+        auto recvMsg = car_sim_api->getVehicleApi()->getRecvCarMCMsg();
+        auto sentMsg = car_sim_api->getVehicleApi()->getSentCarMCMsg();
+        //std::string to FString
+        recvMCMsg = FString(recvMsg.msg.c_str());
+        sentMCMsg = FString(sentMsg.msg.c_str());
     }
 }
 

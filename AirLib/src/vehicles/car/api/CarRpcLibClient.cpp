@@ -68,6 +68,15 @@ __pragma(warning(disable : 4239))
         {
             return static_cast<rpc::client*>(getClient())->call("getCarControls", vehicle_name).as<CarRpcLibAdaptors::CarControls>().to();
         }
+        void CarRpcLibClient::setCarMCMsg(const CarApiBase::CarMCMsg& msg, const std::string& vehicle_name)
+        {
+            static_cast<rpc::client*>(getClient())->call("setCarMCMsg", CarRpcLibAdaptors::CarMCMsg(msg), vehicle_name);
+        }
+        CarApiBase::CarMCMsg CarRpcLibClient::getCarMCMsg()
+        {
+            return static_cast<rpc::client*>(getClient())->call("getCarMCMsg").as<CarRpcLibAdaptors::CarMCMsg>().to();
+        }
+
     }
 } //namespace
 

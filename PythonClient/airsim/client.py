@@ -1629,3 +1629,23 @@ class CarClient(VehicleClient, object):
         """
         controls_raw = self.client.call('getCarControls', vehicle_name)
         return CarControls.from_msgpack(controls_raw)
+     
+    def getCarMCMsg(self, vehicle_name=''):
+        """
+        The position inside the returned CarState is in the frame of the vehicle's starting point
+
+        Args:
+            vehicle_name (str, optional): Name of vehicle
+
+        Returns:
+            CarMCMsg:
+        """
+        state_raw = self.client.call('getCarMCMsg', vehicle_name)
+        return CarMCMsg.from_msgpack(state_raw)
+        
+    def setCarMCMsg(self, msg, vehicle_name=''):
+        """
+        Control the car using throttle, steering, brake, etc.
+
+        """
+        self.client.call('setCarMCMsg', msg, vehicle_name)

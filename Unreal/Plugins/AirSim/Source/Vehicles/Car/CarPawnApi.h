@@ -17,6 +17,23 @@ public:
 
     msr::airlib::CarApiBase::CarState getCarState() const;
 
+    // msr::airlib::CarApiBase::CarMCMsg getCarMCMsg() const;
+    // void setCarMCMsg(const msr::airlib::CarApiBase::CarMCMsg& msg);
+
+    // void sendCarMCMsg(msr::airlib::CarApiBase::CarMCMsg& msg)
+    // {
+    //     vehicle_api_->sendCarMCMsg(msg);
+    // }
+
+    // msr::airlib::CarApiBase::CarMCMsg getRecvCarMCMsg() const
+    // {
+    //     return vehicle_api_->getRecvCarMCMsg();
+    // }
+    // msr::airlib::CarApiBase::CarMCMsg getSentCarMCMsg() const
+    // {
+    //     return vehicle_api_->getSentCarMCMsg();
+    // }
+
     void reset();
     void update();
 
@@ -28,4 +45,7 @@ private:
     ACarPawn* pawn_;
     const msr::airlib::Kinematics::State* pawn_kinematics_;
     msr::airlib::CarApiBase* vehicle_api_;
+    
+    // msr::airlib::CarApiBase::CarMCMsg recvMCMsg_;
+    // msr::airlib::CarApiBase::CarMCMsg sentMCMsg_;
 };

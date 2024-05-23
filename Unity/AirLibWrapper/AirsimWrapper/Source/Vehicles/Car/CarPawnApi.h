@@ -26,4 +26,7 @@ private:
     const msr::airlib::Kinematics::State* pawn_kinematics_;
     std::string car_name_;
     msr::airlib::CarApiBase* vehicle_api_;
+    
+    msr::airlib::CarApiBase::CarMCMsg recvMCMsg_;
+    msr::airlib::CarApiBase::CarMCMsg sentMCMsg_;
 };

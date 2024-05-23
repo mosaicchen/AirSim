@@ -20,6 +20,16 @@ public:
     virtual void continueForTime(double seconds) override;
     virtual void continueForFrames(uint32_t frames) override;
 
+    UFUNCTION(BlueprintCallable)
+    FString GetMCMsg(const FString& vehicle_name = "");
+
+    UPROPERTY(BlueprintVisible, EditAnywhere)
+    bool bShowMCMsg = false;
+    UPROPERTY(BlueprintVisible, EditAnywhere)
+    FString recvMCMsg;
+    UPROPERTY(BlueprintVisible, EditAnywhere)
+    FString sentMCMsg;
+
 private:
     typedef msr::airlib::ClockFactory ClockFactory;
     typedef common_utils::Utils Utils;

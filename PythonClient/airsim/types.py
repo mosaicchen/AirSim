@@ -390,7 +390,11 @@ class CarState(MsgpackMixin):
     collision = CollisionInfo()
     kinematics_estimated = KinematicsState()
     timestamp = np.uint64(0)
-
+    
+class CarMCMsg(MsgpackMixin):
+    msg = ""
+    timestamp = np.uint64(0)
+    
 class MultirotorState(MsgpackMixin):
     collision = CollisionInfo()
     kinematics_estimated = KinematicsState()

@@ -48,6 +48,11 @@ public:
         return vehicle_api_.get();
     }
 
+    CarPawnApi* getPawnApi() const
+    {
+        return pawn_api_.get();
+    }
+
 protected:
     virtual void resetImplementation() override;
 
