@@ -1,0 +1,5 @@
+<launch>
+  <!-- airsim_car_teleop_key already has its own built in velocity smoother -->
+  <node pkg="airsim_car_teleop" type="airsim_car_teleop_mc" name="airsim_car_teleop_mc"  output="screen">
+  </node>
+</launch>

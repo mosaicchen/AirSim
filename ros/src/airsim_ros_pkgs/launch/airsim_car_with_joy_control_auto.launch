@@ -1,5 +1,5 @@
 <launch>
-	<arg name="host" default="localhost" />
+	<arg name="host" default="192.168.47.1" />
 	
 	<node name="airsim_node" pkg="airsim_ros_pkgs" type="airsim_node" output="screen">
 	<!-- <node pkg="nodelet" type="nodelet" name="airsim_nodelet_manager" args="manager" output="screen" /> -->

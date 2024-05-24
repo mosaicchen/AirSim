@@ -1,0 +1,22 @@
+<launch>
+  <!-- <arg name="car_control_topic" default="/airsim_node/drone_1/car_cmd" /> -->
+  <arg name="host" default="192.168.16.1" />
+  <arg name="control_car_name" default="drone_1" />
+  <arg name="car_id" default="1" />
+  <arg name="input_control_car_topic" default="/ant01/cmd_vel" />
+  <arg name="use_enu" default="true"/>
+  <arg name="name" default="airsim_car_control" />
+
+
+  <node pkg="airsim_car_teleop" type="airsim_car_control" name="$(arg name)"  output="screen">
+  	<param name="host_ip" type="string" value="$(arg host)" />
+  	<param name="car_name" type="string" value="$(arg control_car_name)" />
+  	<param name="car_id" type="string" value="$(arg car_id)" />
+  	<param name="input_control_topic" type="string" value="$(arg input_control_car_topic)" />
+		<param name="use_enu" type="bool" value="$(arg use_enu)" />
+
+    	<!-- <remap from="car_cmd" to="$(arg car_control_topic)"/> -->
+  </node>
+
+</launch>
+

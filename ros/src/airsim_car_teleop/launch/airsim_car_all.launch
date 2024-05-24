@@ -1,0 +1,27 @@
+<launch>
+
+<!-- AirSim ROS Wrapper -->
+	<include file="$(find airsim_ros_pkgs)/launch/airsim_node.launch"/>
+	
+	<!-- 当前launch文件中节点 -->
+	<node name="car_control_1" pkg="airsim_car_teleop" type="airsim_car_control">
+	<!-- 传递参数给当前launch文件中的节点 -->
+		<param name="control_car_name" type="string" value="drone_1" />
+		<param name="input_control_car_topic" type="string" value="/ant01/cmd_vel" />
+		<param name="car_id" type="string" value="1" />
+  	</node>
+  	
+	<node name="car_control_2" pkg="airsim_car_teleop" type="airsim_car_control">
+	<!-- 传递参数给当前launch文件中的节点 -->
+		<param name="control_car_name" type="string" value="drone_2" />
+		<param name="input_control_car_topic" type="string" value="/ant02/cmd_vel" />
+		<param name="car_id" type="string" value="2" />
+  	</node>
+  	
+	<node name="car_control_3" pkg="airsim_car_teleop" type="airsim_car_control">
+	<!-- 传递参数给当前launch文件中的节点 -->
+		<param name="control_car_name" type="string" value="drone_3" />
+		<param name="input_control_car_topic" type="string" value="/ant03/cmd_vel" />
+		<param name="car_id" type="string" value="3" />
+  	</node>
+</launch>

@@ -1,0 +1,149 @@
+#!/usr/bin/env python
+
+import rospy
+from geometry_msgs.msg import TwistStamped
+import airsim
+
+
+car_name="drone_1"
+
+#host_ip="127.0.0.1"
+
+# 初始化AirSim客户端
+#client = airsim.CarClient(ip=host_ip)
+#client.confirmConnection()
+
+
+# PID控制器参数
+Kp_linear = 1.0 # 线速度比例增益
+Ki_linear = 0.0  # 线速度积分增益
+Kd_linear = 0.05  # 线速度微分增益
+
+Kp_angular = 1  # 角速度比例增益
+Ki_angular = 0.0  # 角速度积分增益
+Kd_angular = 0.05  # 角速度微分增益
+
+# PID控制器状态变量
+integral_error_linear = 0.0
+last_error_linear = 0.0
+
+integral_error_angular = 0.0
+last_error_angular = 0.0
+
+def twist_stamped_callback(twist_stamped_msg):
+    global integral_error_linear, last_error_linear, integral_error_angular, last_error_angular
+    
+    host_ip="127.0.0.1"
+    host_ip=rospy.get_param('~host_ip','localhost')
+    
+    car_name = rospy.get_param('~car_name', 'drone_1')
+    
+    # 初始化AirSim客户端
+    client = airsim.CarClient(ip=host_ip)
+    client.confirmConnection()
+
+    # 获取目标线速度和角速度
+    target_linear_velocity = twist_stamped_msg.twist.linear.x
+    target_angular_velocity = twist_stamped_msg.twist.angular.z
+
+    # 获取当前车辆状态
+    car_state = client.getCarState(car_name)
+    # current_linear_velocity = car_state.kinematics_estimated.linear_velocity.x_val  # 假设x轴是前进轴
+    current_angular_velocity = car_state.kinematics_estimated.angular_velocity.z_val  # 假设z轴是转向轴
+    
+    current_linear_velocity = car_state.speed
+
+    # 计算线速度误差
+    error_linear = target_linear_velocity - current_linear_velocity
+
+    # 积分误差
+    integral_error_linear += error_linear
+
+    # 微分误差
+    derivative_error_linear = error_linear - last_error_linear
+
+    # 更新上次误差
+    last_error_linear = error_linear
+
+    # 线速度PID控制器输出
+    throttle_output = Kp_linear * error_linear + Ki_linear * integral_error_linear + Kd_linear * derivative_error_linear
+
+    # 将油门输出转换为油门控制值
+    throttle = throttle_output / max_linear_speed
+    throttle = min(max(throttle, -1.0), 1.0)  # 限制在-1到1之间
+
+    # 计算角速度误差
+    error_angular = target_angular_velocity - current_angular_velocity
+
+    # 积分误差
+    integral_error_angular += error_angular
+
+    # 微分误差
+    derivative_error_angular = error_angular - last_error_angular
+
+    # 更新上次误差
+    last_error_angular = error_angular
+
+    # 角速度PID控制器输出
+    steering_output = Kp_angular * error_angular + Ki_angular * integral_error_angular + Kd_angular * derivative_error_angular
+
+    # 将方向盘输出转换为方向盘控制值
+    steering = steering_output / max_angular_speed
+    steering = min(max(steering, -1.0), 1.0)  # 限制在-1到1之间
+
+    # 创建一个CarControls对象
+    car_controls = airsim.CarControls()
+    car_controls.gear_immediate = True
+    if throttle==0.0:
+    	car_controls.handbrake = True
+    	car_controls.brake = 1
+    elif throttle>0:
+    	car_controls.handbrake = False
+    	car_controls.brake = 0
+    	car_controls.manual = False
+    	car_controls.manual_gear = 0
+    	car_controls.throttle = throttle
+    	car_controls.steering = -steering
+    else:
+    	car_controls.handbrake = False
+    	car_controls.brake = 0
+    	car_controls.is_manual_gear = True
+    	car_controls.manual_gear = -1
+    	car_controls.throttle = throttle
+    	car_controls.steering = -steering
+    	
+    if target_linear_velocity==0.0:
+    	car_controls.handbrake = True
+    	car_controls.brake = 1
+    	#car_controls.throttle = 0
+    
+    # 发送控制命令到AirSim
+    client.setCarControls(car_controls,car_name)
+    print("car_name : "+car_name)
+    print(twist_stamped_msg)
+    print(car_controls)
+
+def main():
+    global max_linear_speed, max_angular_speed
+    
+    # host_ip=rospy.get_param('~host_ip','localhost')
+    
+    # 获取车辆的最大线速度和最大角速度
+    max_linear_speed = rospy.get_param('/airsim_node/max_linear_speed', 30.0)  # 默认值
+    max_angular_speed = rospy.get_param('/airsim_node/max_angular_speed', 50.0)  # 默认值
+    
+    # car_name = rospy.get_param('~car_name', 'drone_1')
+    # print("car_name : "+car_name)
+    
+    
+    # 订阅geometry_msgs/TwistStamped话题
+    sub_topic = rospy.get_param('~input_control_topic', '/ant01/cmd_vel')
+    
+    rospy.Subscriber(sub_topic, TwistStamped, twist_stamped_callback)
+    
+    # 保持Python脚本运行直到节点停止
+    rospy.spin()
+
+if __name__ == '__main__':
+    rospy.init_node('airsim_car_control')
+    main()
