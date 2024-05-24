@@ -123,6 +123,7 @@ public:
 
     TMap<FString, FAssetData> asset_map;
     TMap<FString, AActor*> scene_object_map;
+    TMap<FString, AActor*> cache_object_map;
     UMaterial* domain_rand_material_;
 
 protected: //must overrides
@@ -164,6 +165,7 @@ protected:
     UPROPERTY()
     UParticleSystem* collision_display_template;
 
+    int Index;
 private:
     typedef common_utils::Utils Utils;
     typedef msr::airlib::ClockFactory ClockFactory;

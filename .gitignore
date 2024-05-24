@@ -404,4 +404,4 @@ PythonClient/docs/_build
 .cache/
 
 # Dont Update Unreal Project for a lot changes in there
-/Unreal/Environments/Blocks//
+/Unreal/Environments/Blocks/

@@ -26,89 +26,107 @@ class UTextRenderComponent;
 class UInputComponent;
 class UAudioComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FIniticlizeDelegateSignature);
+
 UCLASS(config = Game)
 class ACarPawn : public AWheeledVehiclePawn
 {
-    GENERATED_BODY()
+	GENERATED_BODY()
 
 public:
-    ACarPawn();
+	ACarPawn();
 
-    virtual void BeginPlay() override;
-    virtual void Tick(float Delta) override;
-    virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-    virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation,
-                           FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
+	virtual void BeginPlay() override;
+	virtual void Tick(float Delta) override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation,
+		FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 
-    //interface
-    void initializeForBeginPlay(bool engine_sound);
-    const common_utils::UniqueValueMap<std::string, APIPCamera*> getCameras() const;
-    PawnEvents* getPawnEvents()
-    {
-        return &pawn_events_;
-    }
-    UChaosVehicleMovementComponent* getVehicleMovementComponent() const;
-    const msr::airlib::CarApiBase::CarControls& getKeyBoardControls() const
-    {
-        return keyboard_controls_;
-    }
+	//interface
+	void initializeForBeginPlay(bool engine_sound);
+	const common_utils::UniqueValueMap<std::string, APIPCamera*> getCameras() const;
+	PawnEvents* getPawnEvents()
+	{
+		return &pawn_events_;
+	}
+	UChaosVehicleMovementComponent* getVehicleMovementComponent() const;
+	const msr::airlib::CarApiBase::CarControls& getKeyBoardControls() const
+	{
+		return keyboard_controls_;
+	}
 
-private:
-    void updateHUDStrings();
-    void setupVehicleMovementComponent();
-    void updateInCarHUD();
-    void updatePhysicsMaterial();
+	UPROPERTY(BlueprintAssignable)
+	FIniticlizeDelegateSignature IniticlizeDelegate;
 
-    void setupInputBindings();
-    void onMoveForward(float Val);
-    void onMoveRight(float Val);
-    void onHandbrakePressed();
-    void onHandbrakeReleased();
-    void onFootBrake(float Val);
-    void onReversePressed();
-    void onReverseReleased();
+	UPROPERTY(BlueprintReadWrite)
+	int Id;
+	UPROPERTY(BlueprintReadWrite)
+	bool InputOpen;
+	//TArray<FInputAxisBinding*>
+	UFUNCTION(BlueprintCallable)
+	void onMoveForward(float Val);
+	UFUNCTION(BlueprintCallable)
+	void onMoveRight(float Val);
 
 private:
-    typedef msr::airlib::AirSimSettings AirSimSettings;
+	void updateHUDStrings();
+	void setupVehicleMovementComponent();
+	void updateInCarHUD();
+	void updatePhysicsMaterial();
 
-    UClass* pip_camera_class_;
+	void setupInputBindings();
+	/*
+		void onMoveForward(float Val);
+		void onMoveRight(float Val);
+	*/
+	void onHandbrakePressed();
+	void onHandbrakeReleased();
+	UFUNCTION(BlueprintCallable)
+	void onFootBrake(float Val);
+	void onReversePressed();
+	void onReverseReleased();
 
-    PawnEvents pawn_events_;
+private:
+	typedef msr::airlib::AirSimSettings AirSimSettings;
 
-    bool is_low_friction_;
-    UPhysicalMaterial* slippery_mat_;
-    UPhysicalMaterial* non_slippery_mat_;
+	UClass* pip_camera_class_;
 
-    UPROPERTY()
-    USceneComponent* camera_front_center_base_;
-    UPROPERTY()
-    USceneComponent* camera_front_left_base_;
-    UPROPERTY()
-    USceneComponent* camera_front_right_base_;
-    UPROPERTY()
-    USceneComponent* camera_driver_base_;
-    UPROPERTY()
-    USceneComponent* camera_back_center_base_;
+	PawnEvents pawn_events_;
 
-    UPROPERTY()
-    APIPCamera* camera_front_center_;
-    UPROPERTY()
-    APIPCamera* camera_front_left_;
-    UPROPERTY()
-    APIPCamera* camera_front_right_;
-    UPROPERTY()
-    APIPCamera* camera_driver_;
-    UPROPERTY()
-    APIPCamera* camera_back_center_;
+	bool is_low_friction_;
+	UPhysicalMaterial* slippery_mat_;
+	UPhysicalMaterial* non_slippery_mat_;
 
-    UTextRenderComponent* speed_text_render_;
-    UTextRenderComponent* gear_text_render_;
-    UAudioComponent* engine_sound_audio_;
+	UPROPERTY()
+	USceneComponent* camera_front_center_base_;
+	UPROPERTY()
+	USceneComponent* camera_front_left_base_;
+	UPROPERTY()
+	USceneComponent* camera_front_right_base_;
+	UPROPERTY()
+	USceneComponent* camera_driver_base_;
+	UPROPERTY()
+	USceneComponent* camera_back_center_base_;
 
-    msr::airlib::CarApiBase::CarControls keyboard_controls_;
+	UPROPERTY()
+	APIPCamera* camera_front_center_;
+	UPROPERTY()
+	APIPCamera* camera_front_left_;
+	UPROPERTY()
+	APIPCamera* camera_front_right_;
+	UPROPERTY()
+	APIPCamera* camera_driver_;
+	UPROPERTY()
+	APIPCamera* camera_back_center_;
 
-    FText last_speed_;
-    FText last_gear_;
-    FColor last_gear_display_color_;
-    FColor last_gear_display_reverse_color_;
+	UTextRenderComponent* speed_text_render_;
+	UTextRenderComponent* gear_text_render_;
+	UAudioComponent* engine_sound_audio_;
+
+	msr::airlib::CarApiBase::CarControls keyboard_controls_;
+
+	FText last_speed_;
+	FText last_gear_;
+	FColor last_gear_display_color_;
+	FColor last_gear_display_reverse_color_;
 };

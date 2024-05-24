@@ -19,6 +19,7 @@
 #include "sensors/distance/DistanceSimple.hpp"
 
 #include "Weather/WeatherLib.h"
+#include <Vehicles/Car/CarPawn.h>
 
 #include "DrawDebugHelpers.h"
 
@@ -36,7 +37,8 @@ ASimModeBase* ASimModeBase::getSimMode()
 
 ASimModeBase::ASimModeBase()
 {
-    SIMMODE = this;
+	Index = 0;
+	SIMMODE = this;
 
     static ConstructorHelpers::FClassFinder<APIPCamera> external_camera_class(TEXT("Blueprint'/AirSim/Blueprints/BP_PIPCamera'"));
     external_camera_class_ = external_camera_class.Succeeded() ? external_camera_class.Class : nullptr;
@@ -626,12 +628,27 @@ APawn* ASimModeBase::createVehiclePawn(const AirSimSettings::VehicleSetting& veh
     pawn_spawn_params.SpawnCollisionHandlingOverride =
         ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-    auto vehicle_bp_class = UAirBlueprintLib::LoadClass(
-        getSettings().pawn_paths.at(getVehiclePawnPathName(vehicle_setting)).pawn_bp);
-    APawn* spawned_pawn = static_cast<APawn*>(this->GetWorld()->SpawnActor(
-        vehicle_bp_class, &spawn_position, &spawn_rotation, pawn_spawn_params));
+	auto vehicle_bp_class = UAirBlueprintLib::LoadClass(
+		getSettings().pawn_paths.at(getVehiclePawnPathName(vehicle_setting)).pawn_bp);
 
-    spawned_actors_.Add(spawned_pawn);
+	Index++;
+	//²âÊÔ
+	ACarPawn* localPawn = static_cast<ACarPawn*>(this->GetWorld()->SpawnActor(
+		vehicle_bp_class, &spawn_position, &spawn_rotation, pawn_spawn_params));
+	localPawn->Id = Index;
+
+	localPawn->IniticlizeDelegate.Broadcast();
+
+	APawn* spawned_pawn = static_cast<ACarPawn*>(localPawn);
+	localPawn = nullptr;
+	//
+	//Ô­´úÂë
+	//APawn* spawned_pawn = static_cast<APawn*>(this->GetWorld()->SpawnActor(
+	//	vehicle_bp_class, &spawn_position, &spawn_rotation, pawn_spawn_params));
+//
+
+
+	spawned_actors_.Add(spawned_pawn);
 
     return spawned_pawn;
 }
