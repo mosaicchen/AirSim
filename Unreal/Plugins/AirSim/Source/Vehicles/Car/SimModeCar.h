@@ -23,11 +23,14 @@ public:
     UFUNCTION(BlueprintCallable)
     FString GetMCMsg(const FString& vehicle_name = "");
 
-    UPROPERTY(BlueprintVisible, EditAnywhere)
+    UFUNCTION(BlueprintCallable)
+    void SendMCMsg(const FString& msg,const FString& vehicle_name = "");
+
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
     bool bShowMCMsg = false;
-    UPROPERTY(BlueprintVisible, EditAnywhere)
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
     FString recvMCMsg;
-    UPROPERTY(BlueprintVisible, EditAnywhere)
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
     FString sentMCMsg;
 
 private:

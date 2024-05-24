@@ -1,6 +1,7 @@
 #include "SimModeCar.h"
 #include "UObject/ConstructorHelpers.h"
 
+//#include "vehicles/car/api/CarApiBase.hpp"
 #include "AirBlueprintLib.h"
 #include "common/AirSimSettings.hpp"
 #include "CarPawnSimApi.h"
@@ -57,12 +58,14 @@ void ASimModeCar::SendMCMsg(const FString& msg, const FString& vehicle_name)
 {
     //FString to std::string
     std::string vname(TCHAR_TO_UTF8(*vehicle_name));
+    std::string smsg(TCHAR_TO_UTF8(*msg));
+
     auto sim_api = getVehicleSimApi(vname);
     auto car_sim_api = static_cast<CarPawnSimApi*>(sim_api);
     auto car_api = car_sim_api->getPawnApi();
 
     msr::airlib::CarApiBase::CarMCMsg MCMsg(
-        msg,
+        smsg,
         car_sim_api->getVehicleApi()->clock()->nowNanos());
     car_sim_api->getVehicleApi()->sendCarMCMsg(MCMsg);
 }
