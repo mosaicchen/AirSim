@@ -422,8 +422,8 @@ void APIPCamera::updateCaptureComponentSetting(USceneCaptureComponent2D* capture
                                                bool force_linear_gamma)
 {
     if (auto_format) {
-        //render_target->InitAutoFormat(setting.width, setting.height); //256 X 144, X 480
-        render_target->InitCustomFormat(setting.width, setting.height, PF_B8G8R8A8, true); //256 X 144, X 480
+        render_target->InitAutoFormat(setting.width, setting.height); //256 X 144, X 480
+        //render_target->InitCustomFormat(setting.width, setting.height, PF_B8G8R8A8, true); //256 X 144, X 480
     }
     else {
         render_target->InitCustomFormat(setting.width, setting.height, pixel_format, force_linear_gamma);
