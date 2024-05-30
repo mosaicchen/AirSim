@@ -14,9 +14,9 @@
 		<param name="host_ip" type="string" value="$(arg host)" />
 		<param name="world_frame_id" type="string" value="world_enu" />
 		
-		<!-- <remap from="/airsim_node/drone_1/lidar/LidarCustom" to="/ant01/velodyne_points"/> -->
-		<!-- <remap from="/airsim_node/drone_2/lidar/LidarCustom" to="/ant02/velodyne_points"/> -->
-		<!-- <remap from="/airsim_node/drone_3/lidar/LidarCustom" to="/ant03/velodyne_points"/> -->
+		<remap from="/airsim_node/drone_1/lidar/LidarCustom" to="/ant01/velodyne_points"/>
+		<remap from="/airsim_node/drone_2/lidar/LidarCustom" to="/ant02/velodyne_points"/>
+		<remap from="/airsim_node/drone_3/lidar/LidarCustom" to="/ant03/velodyne_points"/>
 		<!-- <remap from="/airsim_node/drone_1/odom_local_ned" to="/ant01/state_estimation"/> -->
 		<!-- <remap from="/airsim_node/drone_2/odom_local_ned" to="/ant02/state_estimation"/> -->
 		<!-- <remap from="/airsim_node/drone_3/odom_local_ned" to="/ant03/state_estimation"/> -->
