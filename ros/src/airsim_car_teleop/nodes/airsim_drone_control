@@ -1,0 +1,96 @@
+#!/usr/bin/env python
+
+import rospy
+from nav_msgs.msg import Odometry
+from sensor_msgs.msg import PointCloud2
+
+import sys
+import os
+# import airsim
+
+# 获取当前脚本的目录
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# 构建从当前目录到airsim库目录的相对路径
+relative_path = os.path.join(current_dir, '..', '..', '..', '..', 'PythonClient')
+# 将相对路径添加到sys.path中
+sys.path.append(relative_path)
+# 现在你可以导入airsim模块了
+import airsim
+
+class UEROSBridge:
+    def __init__(self,host_ip, drone_id,pub_odom_topic,pub_cloud_topic,alg_odom_topic,vehicle_name,use_enu):
+        self.drone_id = drone_id
+        self.pub_odom_topic = pub_odom_topic
+        self.pub_cloud_topic = pub_cloud_topic
+        self.alg_odom_topic = alg_odom_topic
+        self.vehicle_name = vehicle_name
+        
+        # 初始化AirSim客户端
+        global client
+        client = airsim.CarClient(ip=host_ip)
+        client.confirmConnection()
+
+        global drone_tag
+        drone_tag = "drone_{}".format(drone_id)
+        
+        odom_suffix = "enu" if use_enu else"ned"
+        odom_sub_topic = "/airsim_node/{}/odom_local_{}".format(vehicle_name,odom_suffix)
+        # odom_sub_topic ="/ant0{}/state_estimation".format(drone_id)
+
+        # 根据drone_id配置PointCloud2话题名称
+        cloud_sub_topic = "/airsim_node/{}/lidar/LidarCustom".format(vehicle_name)
+        # cloud_sub_topic = "/ant0{}/velodyne_points".format(drone_id)
+
+        # 根据drone_id配置Odom话题名称
+        alg_odom_sub_topic = "/drone_{}_{}".format(drone_id,alg_odom_topic)
+
+        # 订阅UE发送的Odom信息
+        self.odom_sub = rospy.Subscriber(odom_sub_topic, Odometry, self.odom_callback)
+        # 订阅UE发送的PointCloud2信息
+        self.cloud_sub = rospy.Subscriber(cloud_sub_topic, PointCloud2, self.cloud_callback)
+        
+        # 订阅算法发送的Odom信息
+        self.cloud_sub = rospy.Subscriber(alg_odom_sub_topic, Odometry, self.alg_odom_callback)
+
+        # 发布Odom信息到Planner
+        self.odom_pub = rospy.Publisher("/drone_{}_{}".format(drone_id,pub_odom_topic), Odometry, queue_size=100)
+        # 发布PointCloud2信息到Planner
+        self.cloud_pub = rospy.Publisher("/drone_{}_{}".format(drone_id,pub_cloud_topic), PointCloud2, queue_size=10)
+
+    def odom_callback(self, msg):
+        # 发布Odom信息到Planner
+        # TODO 坐标转换
+        self.odom_pub.publish(msg)
+
+    def cloud_callback(self, msg):
+        # 发布PointCloud2信息到Planner
+        # TODO 坐标转换
+        self.cloud_pub.publish(msg)
+    
+    def alg_odom_callback(self, msg):
+        # 发布Odom信息到Planner
+        # TODO 坐标转换
+        pose = msg.pose
+        # pose.position = car_state.kinematics_estimated.position 
+        # pose.orientation = car_state.kinematics_estimated.orientation 
+        client.simSetObjectPose(drone_tag,pose)
+
+if __name__ == '__main__':
+    rospy.init_node('ue_to_ros_bridge')
+
+    # host_ip="127.0.0.1"
+    host_ip=rospy.get_param('~host_ip','localhost')
+
+    # 获取参数drone_id
+    drone_id = rospy.get_param('~drone_id', 0)
+    pub_odom_topic = rospy.get_param('~pub_odom_topic', "pub_odom_topic")
+    pub_cloud_topic = rospy.get_param('~pub_cloud_topic', "pub_cloud_topic")
+    alg_odom_topic = rospy.get_param('~alg_odom_topic', "alg_odom_topic")
+    
+    vehicle_name = rospy.get_param('~vehicle_name', 'drone_1')
+    use_enu = rospy.get_param('~use_enu',True)
+
+    # 创建UEROSBridge实例
+    bridge = UEROSBridge(host_ip,drone_id,pub_odom_topic,pub_cloud_topic,alg_odom_topic,vehicle_name,use_enu)
+
+    rospy.spin()

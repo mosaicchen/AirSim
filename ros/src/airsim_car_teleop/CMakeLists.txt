@@ -44,6 +44,7 @@ catkin_install_python(PROGRAMS
   nodes/airsim_car_teleop_joy
   nodes/airsim_car_control
   nodes/airsim_car_teleop_mc
+  nodes/airsim_drone_control
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

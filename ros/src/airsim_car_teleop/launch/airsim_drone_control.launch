@@ -1,0 +1,26 @@
+<launch>
+  <!-- <arg name="car_control_topic" default="/airsim_node/drone_1/car_cmd" /> -->
+  <arg name="host" default="192.168.1.137" />
+  <arg name="vehicle_name" default="drone_1" />
+  <arg name="drone_id" default="1" />
+  <arg name="pub_odom_topic" default="pub_odom" />
+  <arg name="pub_cloud_topic" default="pub_cloud" />
+  <arg name="alg_odom_topic" default="alg_odom" />
+  <arg name="use_enu" default="true"/>
+  <arg name="name" default="airsim_drone_control" />
+
+
+  <node pkg="airsim_car_teleop" type="airsim_drone_control" name="$(arg name)"  output="screen">
+  	<param name="host_ip" type="string" value="$(arg host)" />
+  	<param name="vehicle_name" type="string" value="$(arg vehicle_name)" />
+  	<param name="drone_id" type="string" value="$(arg drone_id)" />
+  	<param name="pub_odom_topic" type="string" value="$(arg pub_odom_topic)" />
+  	<param name="pub_cloud_topic" type="string" value="$(arg pub_cloud_topic)" />
+  	<param name="alg_odom_topic" type="string" value="$(arg alg_odom_topic)" />
+		<param name="use_enu" type="bool" value="$(arg use_enu)" />
+
+    	<!-- <remap from="car_cmd" to="$(arg car_control_topic)"/> -->
+  </node>
+
+</launch>
+
