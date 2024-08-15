@@ -35,7 +35,7 @@ namespace airlib
         };
 
     public:
-        RpcLibClientBase(const string& ip_address = "localhost", uint16_t port = RpcLibPort, float timeout_sec = 60);
+        RpcLibClientBase(const string& ip_address = "localhost", uint16_t port = RpcLibPort, float timeout_sec = 6000);
         virtual ~RpcLibClientBase(); //required for pimpl
 
         void confirmConnection();
