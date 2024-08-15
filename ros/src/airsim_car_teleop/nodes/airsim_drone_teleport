@@ -30,7 +30,7 @@ class UEROSBridge:
         drone_tag = "drone_{}".format(drone_id)
 
         # 根据drone_id配置Odom话题名称
-        drone_pos_sub_topic = "/mc/drone_{}".format(drone_id)
+        drone_pos_sub_topic = "/airsim_node/drone_{}/set_location".format(drone_id)
         
         # 订阅算法发送的Odom信息
         self.sub = rospy.Subscriber(drone_pos_sub_topic, Odometry, self.alg_odom_callback)

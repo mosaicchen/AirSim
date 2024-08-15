@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="host" default="192.168.47.1" />
+  <arg name="host" default="192.168.1.105" />
   <arg name="vehicle_name" default="drone_1" />
   <arg name="drone_id" default="1" />
   <arg name="name" default="airsim_drone_teleport" />
