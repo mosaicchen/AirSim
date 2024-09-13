@@ -14,108 +14,125 @@ extern CORE_API uint32 GFrameNumber;
 
 void ASimModeCar::BeginPlay()
 {
-    Super::BeginPlay();
+	Super::BeginPlay();
 
-    initializePauseState();
+	initializePauseState();
 }
 
 void ASimModeCar::initializePauseState()
 {
-    pause_period_ = 0;
-    pause_period_start_ = 0;
-    pause(false);
+	pause_period_ = 0;
+	pause_period_start_ = 0;
+	pause(false);
 }
 
 void ASimModeCar::continueForTime(double seconds)
 {
-    pause_period_start_ = ClockFactory::get()->nowNanos();
-    pause_period_ = seconds * current_clockspeed_;
-    pause(false);
+	pause_period_start_ = ClockFactory::get()->nowNanos();
+	pause_period_ = seconds * current_clockspeed_;
+	pause(false);
 }
 
 void ASimModeCar::continueForFrames(uint32_t frames)
 {
-    targetFrameNumber_ = GFrameNumber + frames;
-    frame_countdown_enabled_ = true;
-    pause(false);
+	targetFrameNumber_ = GFrameNumber + frames;
+	frame_countdown_enabled_ = true;
+	pause(false);
 }
 
 FString ASimModeCar::GetMCMsg(const FString& vehicle_name)
 {
-    //FString to std::string
-    std::string vname(TCHAR_TO_UTF8(*vehicle_name));
+	//FString to std::string
+	std::string vname(TCHAR_TO_UTF8(*vehicle_name));
 
-    auto sim_api = getVehicleSimApi(vname);
-    auto car_sim_api = static_cast<CarPawnSimApi*>(sim_api);
-    //auto car_api = car_sim_api->getPawnApi();
-    auto msg = car_sim_api->getVehicleApi()->getCarMCMsg();
-    //std::string to FString
-    FString fMsg = FString(msg.msg.c_str());
-    return fMsg;
+	auto sim_api = getVehicleSimApi(vname);
+	auto car_sim_api = static_cast<CarPawnSimApi*>(sim_api);
+	//auto car_api = car_sim_api->getPawnApi();
+	auto msg = car_sim_api->getVehicleApi()->getCarMCMsg();
+	//std::string to FString
+	FString fMsg = FString(msg.msg.c_str());
+	return fMsg;
 }
 
 void ASimModeCar::SendMCMsg(const FString& msg, const FString& vehicle_name)
 {
-    //FString to std::string
-    std::string vname(TCHAR_TO_UTF8(*vehicle_name));
-    std::string smsg(TCHAR_TO_UTF8(*msg));
+	//FString to std::string
+	std::string vname(TCHAR_TO_UTF8(*vehicle_name));
+	std::string smsg(TCHAR_TO_UTF8(*msg));
 
-    auto sim_api = getVehicleSimApi(vname);
-    auto car_sim_api = static_cast<CarPawnSimApi*>(sim_api);
-    auto car_api = car_sim_api->getPawnApi();
+	auto sim_api = getVehicleSimApi(vname);
+	auto car_sim_api = static_cast<CarPawnSimApi*>(sim_api);
+	auto car_api = car_sim_api->getPawnApi();
 
-    msr::airlib::CarApiBase::CarMCMsg MCMsg(
-        smsg,
-        car_sim_api->getVehicleApi()->clock()->nowNanos());
-    car_sim_api->getVehicleApi()->sendCarMCMsg(MCMsg);
+	msr::airlib::CarApiBase::CarMCMsg MCMsg(
+		smsg,
+		car_sim_api->getVehicleApi()->clock()->nowNanos());
+	car_sim_api->getVehicleApi()->sendCarMCMsg(MCMsg);
 }
 
 void ASimModeCar::setupClockSpeed()
 {
-    Super::setupClockSpeed();
+	Super::setupClockSpeed();
 
-    current_clockspeed_ = getSettings().clock_speed;
+	current_clockspeed_ = getSettings().clock_speed;
 
-    //setup clock in PhysX
-    UAirBlueprintLib::setUnrealClockSpeed(this, current_clockspeed_);
-    UAirBlueprintLib::LogMessageString("Clock Speed: ", std::to_string(current_clockspeed_), LogDebugLevel::Informational);
+	//setup clock in PhysX
+	UAirBlueprintLib::setUnrealClockSpeed(this, current_clockspeed_);
+	UAirBlueprintLib::LogMessageString("Clock Speed: ", std::to_string(current_clockspeed_), LogDebugLevel::Informational);
 }
 
 void ASimModeCar::Tick(float DeltaSeconds)
 {
-    Super::Tick(DeltaSeconds);
+	Super::Tick(DeltaSeconds);
 
-    if (!isPaused())
-        ClockFactory::get()->stepBy(DeltaSeconds);
+	if (!isPaused())
+		ClockFactory::get()->stepBy(DeltaSeconds);
 
-    if (pause_period_start_ > 0) {
-        if (ClockFactory::get()->elapsedSince(pause_period_start_) >= pause_period_) {
-            if (!isPaused())
-                pause(true);
+	if (pause_period_start_ > 0) {
+		if (ClockFactory::get()->elapsedSince(pause_period_start_) >= pause_period_) {
+			if (!isPaused())
+				pause(true);
 
-            pause_period_start_ = 0;
-        }
-    }
+			pause_period_start_ = 0;
+		}
+	}
 
-    if (frame_countdown_enabled_) {
-        if (targetFrameNumber_ <= GFrameNumber) {
-            if (!isPaused())
-                pause(true);
+	if (frame_countdown_enabled_) {
+		if (targetFrameNumber_ <= GFrameNumber) {
+			if (!isPaused())
+				pause(true);
 
-            frame_countdown_enabled_ = false;
-        }
-    }
+			frame_countdown_enabled_ = false;
+		}
+	}
 
-    if (bShowMCMsg) {
-        auto sim_api = getVehicleSimApi();
-        auto car_sim_api = static_cast<CarPawnSimApi*>(sim_api);
-        //auto car_api = car_sim_api->getPawnApi();
-        auto recvMsg = car_sim_api->getVehicleApi()->getRecvCarMCMsg();
-        auto sentMsg = car_sim_api->getVehicleApi()->getSentCarMCMsg();
-        //std::string to FString
-        recvMCMsg = FString(recvMsg.msg.c_str());
-        sentMCMsg = FString(sentMsg.msg.c_str());
-    }
+	if (bShowMCMsg) {
+		auto sim_api = getVehicleSimApi();
+		auto car_sim_api = static_cast<CarPawnSimApi*>(sim_api);
+		//auto car_api = car_sim_api->getPawnApi();
+		auto recvMsg = car_sim_api->getVehicleApi()->getRecvCarMCMsg();
+		auto sentMsg = car_sim_api->getVehicleApi()->getSentCarMCMsg();
+		//std::string to FString
+		recvMCMsg = FString(recvMsg.msg.c_str());
+		sentMCMsg = FString(sentMsg.msg.c_str());
+	}
+
+	if (!bIsApiControlled)
+	{
+		auto vsim_api = getVehicleSimApi();
+		auto vcar_sim_api = static_cast<CarPawnSimApi*>(vsim_api);
+		if (vcar_sim_api->getVehicleApi()->isApiControlEnabled())
+		{
+			TArray<AActor*> pawns;
+			getExistingVehiclePawns(pawns);
+
+			for (AActor* pawn : pawns) {
+				auto vehicle_pawn = static_cast<ACarPawn*>(pawn);
+				vehicle_pawn->ApiControlEvent.Broadcast();
+			}
+			bIsApiControlled = true;
+		}
+	}
 }
 
 //-------------------------------- overrides -----------------------------------------------//
@@ -123,61 +140,61 @@ void ASimModeCar::Tick(float DeltaSeconds)
 std::unique_ptr<msr::airlib::ApiServerBase> ASimModeCar::createApiServer() const
 {
 #ifdef AIRLIB_NO_RPC
-    return ASimModeBase::createApiServer();
+	return ASimModeBase::createApiServer();
 #else
-    return std::unique_ptr<msr::airlib::ApiServerBase>(new msr::airlib::CarRpcLibServer(
-        getApiProvider(), getSettings().api_server_address, getSettings().api_port));
+	return std::unique_ptr<msr::airlib::ApiServerBase>(new msr::airlib::CarRpcLibServer(
+		getApiProvider(), getSettings().api_server_address, getSettings().api_port));
 #endif
 }
 
 void ASimModeCar::getExistingVehiclePawns(TArray<AActor*>& pawns) const
 {
-    UAirBlueprintLib::FindAllActor<TVehiclePawn>(this, pawns);
+	UAirBlueprintLib::FindAllActor<TVehiclePawn>(this, pawns);
 }
 
 bool ASimModeCar::isVehicleTypeSupported(const std::string& vehicle_type) const
 {
-    return ((vehicle_type == AirSimSettings::kVehicleTypePhysXCar) ||
-            (vehicle_type == AirSimSettings::kVehicleTypeArduRover));
+	return ((vehicle_type == AirSimSettings::kVehicleTypePhysXCar) ||
+		(vehicle_type == AirSimSettings::kVehicleTypeArduRover));
 }
 
 std::string ASimModeCar::getVehiclePawnPathName(const AirSimSettings::VehicleSetting& vehicle_setting) const
 {
-    //decide which derived BP to use
-    std::string pawn_path = vehicle_setting.pawn_path;
-    if (pawn_path == "")
-        pawn_path = "DefaultCar";
+	//decide which derived BP to use
+	std::string pawn_path = vehicle_setting.pawn_path;
+	if (pawn_path == "")
+		pawn_path = "DefaultCar";
 
-    return pawn_path;
+	return pawn_path;
 }
 
 PawnEvents* ASimModeCar::getVehiclePawnEvents(APawn* pawn) const
 {
-    return static_cast<TVehiclePawn*>(pawn)->getPawnEvents();
+	return static_cast<TVehiclePawn*>(pawn)->getPawnEvents();
 }
 const common_utils::UniqueValueMap<std::string, APIPCamera*> ASimModeCar::getVehiclePawnCameras(
-    APawn* pawn) const
+	APawn* pawn) const
 {
-    return (static_cast<const TVehiclePawn*>(pawn))->getCameras();
+	return (static_cast<const TVehiclePawn*>(pawn))->getCameras();
 }
 void ASimModeCar::initializeVehiclePawn(APawn* pawn)
 {
-    auto vehicle_pawn = static_cast<TVehiclePawn*>(pawn);
-    vehicle_pawn->initializeForBeginPlay(getSettings().engine_sound);
+	auto vehicle_pawn = static_cast<TVehiclePawn*>(pawn);
+	vehicle_pawn->initializeForBeginPlay(getSettings().engine_sound);
 }
 std::unique_ptr<PawnSimApi> ASimModeCar::createVehicleSimApi(
-    const PawnSimApi::Params& pawn_sim_api_params) const
+	const PawnSimApi::Params& pawn_sim_api_params) const
 {
-    auto vehicle_pawn = static_cast<TVehiclePawn*>(pawn_sim_api_params.pawn);
-    auto vehicle_sim_api = std::unique_ptr<PawnSimApi>(new CarPawnSimApi(pawn_sim_api_params,
-                                                                         vehicle_pawn->getKeyBoardControls()));
-    vehicle_sim_api->initialize();
-    vehicle_sim_api->reset();
-    return vehicle_sim_api;
+	auto vehicle_pawn = static_cast<TVehiclePawn*>(pawn_sim_api_params.pawn);
+	auto vehicle_sim_api = std::unique_ptr<PawnSimApi>(new CarPawnSimApi(pawn_sim_api_params,
+		vehicle_pawn->getKeyBoardControls()));
+	vehicle_sim_api->initialize();
+	vehicle_sim_api->reset();
+	return vehicle_sim_api;
 }
 msr::airlib::VehicleApiBase* ASimModeCar::getVehicleApi(const PawnSimApi::Params& pawn_sim_api_params,
-                                                        const PawnSimApi* sim_api) const
+	const PawnSimApi* sim_api) const
 {
-    const auto car_sim_api = static_cast<const CarPawnSimApi*>(sim_api);
-    return car_sim_api->getVehicleApi();
+	const auto car_sim_api = static_cast<const CarPawnSimApi*>(sim_api);
+	return car_sim_api->getVehicleApi();
 }

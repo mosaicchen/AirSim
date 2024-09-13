@@ -27,6 +27,15 @@ class UInputComponent;
 class UAudioComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FIniticlizeDelegateSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_FiveParams(FSetActorMoveDelegate, FVector, in_Point, FRotator, in_rotator, float, LWheelSpeed, float, RWheelSpeed, bool, in_Phsics);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FMoveInputDelegate, float, in_FSpeed, float, in_RSpeed);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMoveUVAInputDelegate, float, in_FSpeed);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRightUVAInputDelegate, float, in_FSpeed);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FUpUVAInputDelegate, float, in_FSpeed);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRLUVAInputDelegate, float, in_FSpeed);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FApiControlEvent);
+
 
 UCLASS(config = Game)
 class ACarPawn : public AWheeledVehiclePawn
@@ -57,9 +66,39 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FIniticlizeDelegateSignature IniticlizeDelegate;
+	UPROPERTY(BlueprintAssignable)
+	FSetActorMoveDelegate SetActorMoveDelegate;
+	UPROPERTY(BlueprintAssignable)
+	FMoveInputDelegate MoveInputDelegate;
+	//UVAMove
+	UPROPERTY(BlueprintAssignable)
+	FMoveUVAInputDelegate UAVMoveInputDelegate;
+	UPROPERTY(BlueprintAssignable)
+	FRightUVAInputDelegate UAVRightInputDelegate;
+	UPROPERTY(BlueprintAssignable)
+	FUpUVAInputDelegate UAVUpInputDelegate;
+	UPROPERTY(BlueprintAssignable)
+	FRLUVAInputDelegate UAVRLInputDelegate;
+
+	UPROPERTY(BlueprintAssignable)
+	FApiControlEvent ApiControlEvent;
+	//
 
 	UPROPERTY(BlueprintReadWrite)
 	int Id;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int Type;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int ObjectType;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float lookDistance;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool inputOff;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float RotateSpeed;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool UAVinput;
+
 	UPROPERTY(BlueprintReadWrite)
 	bool InputOpen;
 	//TArray<FInputAxisBinding*>
@@ -67,6 +106,38 @@ public:
 	void onMoveForward(float Val);
 	UFUNCTION(BlueprintCallable)
 	void onMoveRight(float Val);
+
+	UFUNCTION(BlueprintCallable)
+	void SetSimulatePhysics(bool Open);
+	UFUNCTION(BlueprintCallable)
+	void SetMoveData(FVector in_Point, FRotator in_rotator, float LWheelSpeed, float RWheelSpeed, bool in_Phsics);
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	void GetData(int& ou_id, FVector& pos, FRotator& Rot, float& LWheelSpeed, float& RWheelSpeed);
+
+	//PID
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float TestMoveSpeed;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float InKp;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float InKi;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float InKd;
+	float MoveInputV;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float TestRotatorSpeed;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float InKpR;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float InKiR;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float InKdR;
+	//
+	void onReversePressed();
+	void onReverseReleased();
+	void onUpMove(float Val);
+	void onRLMove(float Val);
 
 private:
 	void updateHUDStrings();
@@ -83,8 +154,8 @@ private:
 	void onHandbrakeReleased();
 	UFUNCTION(BlueprintCallable)
 	void onFootBrake(float Val);
-	void onReversePressed();
-	void onReverseReleased();
+	//PID
+	void onTestMoveForward(float val);
 
 private:
 	typedef msr::airlib::AirSimSettings AirSimSettings;

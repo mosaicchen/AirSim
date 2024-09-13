@@ -83,6 +83,9 @@ ACarPawn::ACarPawn()
 	last_gear_display_color_ = FColor(255, 255, 255, 255);
 
 	is_low_friction_ = false;
+
+	speed_text_render_->bHiddenInGame = true;
+	gear_text_render_->bHiddenInGame = true;
 }
 
 void ACarPawn::setupVehicleMovementComponent()
@@ -91,23 +94,23 @@ void ACarPawn::setupVehicleMovementComponent()
 	movement->WheelSetups.SetNum(4);
 	check(movement->WheelSetups.Num() == 4);
 
-    // Wheels/Tires
-    // Setup the wheels
-    movement->WheelSetups[0].WheelClass = UCarWheelFront::StaticClass();
-    movement->WheelSetups[0].BoneName = FName("WheelFL");
-    movement->WheelSetups[0].AdditionalOffset = FVector(0.f, -8.f, 0.f);
+	// Wheels/Tires
+	// Setup the wheels
+	movement->WheelSetups[0].WheelClass = UCarWheelFront::StaticClass();
+	movement->WheelSetups[0].BoneName = FName("WheelFL");
+	movement->WheelSetups[0].AdditionalOffset = FVector(0.f, -8.f, 0.f);
 
-    movement->WheelSetups[1].WheelClass = UCarWheelFront::StaticClass();
-    movement->WheelSetups[1].BoneName = FName("WheelFR");
-    movement->WheelSetups[1].AdditionalOffset = FVector(0.f, 8.f, 0.f);
+	movement->WheelSetups[1].WheelClass = UCarWheelFront::StaticClass();
+	movement->WheelSetups[1].BoneName = FName("WheelFR");
+	movement->WheelSetups[1].AdditionalOffset = FVector(0.f, 8.f, 0.f);
 
-    movement->WheelSetups[2].WheelClass = UCarWheelRear::StaticClass();
-    movement->WheelSetups[2].BoneName = FName("WheelBL");
-    movement->WheelSetups[2].AdditionalOffset = FVector(0.f, -8.f, 0.f);
+	movement->WheelSetups[2].WheelClass = UCarWheelRear::StaticClass();
+	movement->WheelSetups[2].BoneName = FName("WheelBL");
+	movement->WheelSetups[2].AdditionalOffset = FVector(0.f, -8.f, 0.f);
 
-    movement->WheelSetups[3].WheelClass = UCarWheelRear::StaticClass();
-    movement->WheelSetups[3].BoneName = FName("WheelBR");
-    movement->WheelSetups[3].AdditionalOffset = FVector(0.f, 8.f, 0.f);
+	movement->WheelSetups[3].WheelClass = UCarWheelRear::StaticClass();
+	movement->WheelSetups[3].BoneName = FName("WheelBR");
+	movement->WheelSetups[3].AdditionalOffset = FVector(0.f, 8.f, 0.f);
 
 	//// Adjust the tire loading
 	//movement->MinNormalizedTireLoad = 0.0f;
@@ -146,17 +149,17 @@ void ACarPawn::setupVehicleMovementComponent()
 	// Disable reverse as brake, this is needed for SetBreakInput() to take effect
 	movement->bReverseAsBrake = false;
 
-    // Physics settings
-    // Adjust the center of mass - the buggy is quite low
-    UPrimitiveComponent* primitive = Cast<UPrimitiveComponent>(movement->UpdatedComponent);
-    if (primitive) {
-        primitive->BodyInstance.COMNudge = FVector(8.0f, 0.0f, 0.0f);
-    }
-    movement->UpdatedPrimitive = primitive;
-    // Set the inertia scale. This controls how the mass of the vehicle is distributed.
-    movement->InertiaTensorScale = FVector(1.0f, 1.333f, 1.2f);
-    //movement->bDeprecatedSpringOffsetMode = true;
-    movement->bAutoRegisterUpdatedComponent = true;
+	// Physics settings
+	// Adjust the center of mass - the buggy is quite low
+	UPrimitiveComponent* primitive = Cast<UPrimitiveComponent>(movement->UpdatedComponent);
+	if (primitive) {
+		primitive->BodyInstance.COMNudge = FVector(8.0f, 0.0f, 0.0f);
+	}
+	movement->UpdatedPrimitive = primitive;
+	// Set the inertia scale. This controls how the mass of the vehicle is distributed.
+	movement->InertiaTensorScale = FVector(1.0f, 1.333f, 1.2f);
+	//movement->bDeprecatedSpringOffsetMode = true;
+	movement->bAutoRegisterUpdatedComponent = true;
 }
 
 void ACarPawn::NotifyHit(class UPrimitiveComponent* MyComp, class AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation,
@@ -274,6 +277,16 @@ void ACarPawn::BeginPlay()
 	engine_sound_audio_->Play();
 }
 
+void ACarPawn::GetData(int& ou_id, FVector& pos, FRotator& Rot, float& LWheelSpeed, float& RWheelSpeed)
+{
+	ou_id = Id;
+	pos = this->GetActorLocation();
+	Rot = this->GetActorRotation();
+	UChaosWheeledVehicleMovementComponent* movement = CastChecked<UChaosWheeledVehicleMovementComponent>(getVehicleMovementComponent());
+	LWheelSpeed = movement->Wheels[0]->GetWheelAngularVelocity();
+	RWheelSpeed = movement->Wheels[1]->GetWheelAngularVelocity();
+}
+
 void ACarPawn::updateHUDStrings()
 {
 
@@ -339,16 +352,20 @@ void ACarPawn::setupInputBindings()
 	//UKismetSystemLibrary::PrintString(this, "this name" + this->GetName());
 
 
-
+	
 	UAirBlueprintLib::EnableInput(this);
 
-	UAirBlueprintLib::BindAxisToKey(FInputAxisKeyMapping("MoveForward", EKeys::Up, 1), this, this, &ACarPawn::onMoveForward);
+	//UAirBlueprintLib::BindAxisToKey(FInputAxisKeyMapping("MoveForward", EKeys::Y, 1), this, this, &ACarPawn::onMoveForward);
 
-	UAirBlueprintLib::BindAxisToKey(FInputAxisKeyMapping("MoveForward", EKeys::Down, -1), this, this, &ACarPawn::onMoveForward);
+	UAirBlueprintLib::BindAxisToKey(FInputAxisKeyMapping("MoveForward", EKeys::H, -1), this, this, &ACarPawn::onTestMoveForward);
 
-	UAirBlueprintLib::BindAxisToKey(FInputAxisKeyMapping("MoveRight", EKeys::Right, 1), this, this, &ACarPawn::onMoveRight);
+	UAirBlueprintLib::BindAxisToKey(FInputAxisKeyMapping("MoveRight", EKeys::J, 1), this, this, &ACarPawn::onMoveRight);
 
-	UAirBlueprintLib::BindAxisToKey(FInputAxisKeyMapping("MoveRight", EKeys::Left, -1), this, this, &ACarPawn::onMoveRight);
+	UAirBlueprintLib::BindAxisToKey(FInputAxisKeyMapping("MoveRight", EKeys::G, -1), this, this, &ACarPawn::onMoveRight);
+
+	//PID
+	UAirBlueprintLib::BindAxisToKey(FInputAxisKeyMapping("MoveForward", EKeys::Y, 1), this, this, &ACarPawn::onTestMoveForward);
+
 
 
 	UAirBlueprintLib::BindActionToKey("Handbrake", EKeys::End, this, &ACarPawn::onHandbrakePressed, true);
@@ -361,6 +378,12 @@ void ACarPawn::setupInputBindings()
 	UAirBlueprintLib::BindAxisToKey(FInputAxisKeyMapping("MoveForward", EKeys::Gamepad_RightTriggerAxis, 1), this, this, &ACarPawn::onMoveForward);
 
 	UAirBlueprintLib::BindAxisToKey(FInputAxisKeyMapping("Footbrake", EKeys::Gamepad_LeftTriggerAxis, 1), this, this, &ACarPawn::onFootBrake);
+
+
+	UAirBlueprintLib::BindAxisToKey(FInputAxisKeyMapping("UpMove", EKeys::T, 1), this, this, &ACarPawn::onUpMove);
+	UAirBlueprintLib::BindAxisToKey(FInputAxisKeyMapping("UpMove", EKeys::U, -1), this, this, &ACarPawn::onUpMove);
+	UAirBlueprintLib::BindAxisToKey(FInputAxisKeyMapping("RLMove", EKeys::V, -1), this, this, &ACarPawn::onRLMove);
+	UAirBlueprintLib::BindAxisToKey(FInputAxisKeyMapping("RLMove", EKeys::N, 1), this, this, &ACarPawn::onRLMove);
 
 	//below is not needed
 	//UAirBlueprintLib::BindActionToKey("Reverse", EKeys::Down, this, &ACarPawn::onReversePressed, true);
@@ -391,8 +414,20 @@ void ACarPawn::onMoveRight(float Val)
 {
 	if (!InputOpen)
 		Val = 0.0f;
+	//	TestRotatorSpeed = Val;
 
-	keyboard_controls_.steering = Val;
+	keyboard_controls_.steering = Val * TestRotatorSpeed;
+	UAVRightInputDelegate.Broadcast(Val);
+}
+
+void ACarPawn::SetSimulatePhysics(bool Open)
+{
+	GetMesh()->SetSimulatePhysics(Open);
+}
+
+void ACarPawn::SetMoveData(FVector in_Point, FRotator in_rotator, float LWheelSpeed, float RWheelSpeed, bool in_Phsics)
+{
+	SetActorMoveDelegate.Broadcast(in_Point, in_rotator, LWheelSpeed, RWheelSpeed, in_Phsics);
 }
 
 void ACarPawn::onHandbrakePressed()
@@ -426,6 +461,35 @@ void ACarPawn::onReverseReleased()
 		keyboard_controls_.manual_gear = 0;
 		keyboard_controls_.gear_immediate = true;
 	}
+}
+
+void ACarPawn::onUpMove(float Val)
+{
+	UAVUpInputDelegate.Broadcast(Val);
+}
+void ACarPawn::onRLMove(float Val)
+{
+	UAVRLInputDelegate.Broadcast(Val);
+}
+
+
+void ACarPawn::onTestMoveForward(float val)
+{
+	if (!InputOpen)
+		val = 0.0f;
+	//else if (val == 0)
+	//	return;
+
+	if (val < 0)
+		onReversePressed();
+	else
+	{
+		onReverseReleased();
+	}
+	//FString x = FString::SanitizeFloat(Val) + " " + (PawnInput ? "true" : "flase");
+	MoveInputV = val;
+	keyboard_controls_.throttle = val * TestMoveSpeed;
+	UAVMoveInputDelegate.Broadcast(val);
 }
 
 #undef LOCTEXT_NAMESPACE

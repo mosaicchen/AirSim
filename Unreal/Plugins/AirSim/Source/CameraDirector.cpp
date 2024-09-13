@@ -185,6 +185,7 @@ void ACameraDirector::setMode(ECameraDirectorMode mode)
 
 void ACameraDirector::setupInputBindings()
 {
+    return;
     UAirBlueprintLib::EnableInput(this);
 
     UAirBlueprintLib::BindActionToKey("inputEventFpvView", EKeys::F, this, &ACameraDirector::inputEventFpvView);

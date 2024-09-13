@@ -72,7 +72,7 @@ std::unique_ptr<ASimModeWorldBase::PhysicsEngineBase> ASimModeWorldBase::createP
         else {
             physics_engine.reset(new msr::airlib::FastPhysicsEngine());
         }
-
+       
         physics_engine->setWind(getSettings().wind);
         physics_engine->setExtForce(getSettings().ext_force);
     }

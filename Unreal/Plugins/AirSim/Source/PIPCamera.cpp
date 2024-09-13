@@ -423,6 +423,7 @@ void APIPCamera::updateCaptureComponentSetting(USceneCaptureComponent2D* capture
 {
     if (auto_format) {
         render_target->InitAutoFormat(setting.width, setting.height); //256 X 144, X 480
+        // Modified by MC
         //render_target->InitCustomFormat(setting.width, setting.height, PF_B8G8R8A8, true); //256 X 144, X 480
     }
     else {

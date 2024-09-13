@@ -33,6 +33,9 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     FString sentMCMsg;
 
+    UPROPERTY()
+    bool bIsApiControlled = false;
+
 private:
     typedef msr::airlib::ClockFactory ClockFactory;
     typedef common_utils::Utils Utils;
