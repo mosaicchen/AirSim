@@ -143,6 +143,35 @@ namespace airlib
         {
             return sentMCMsg_;
         }
+        
+        virtual void toUECarCustomString(const CustomStrData& data) override
+        {
+            toUECustomStr_ = data;
+        }
+        virtual const CustomStrData& fromUECarCustomString() const override
+        {
+            return fromUECustomStr_;
+        }
+        
+        virtual void setAttack(const AttackState& data) override
+        {
+            attackState_ = data;
+        }
+        
+        virtual const AttackState& getAttackState() const override
+        {
+            return attackState_;
+        }
+
+        virtual const VehicleState& getVehicleState() const override
+        {
+            return vehicleState_;
+        }
+        
+        virtual void updateVehicleState(const VehicleState state) override
+        {
+            vehicleState_ = state;
+        }
 
     protected:
         void closeConnections()
@@ -348,6 +377,10 @@ namespace airlib
         CarState last_car_state_;
         CarMCMsg recvMCMsg_;
         CarMCMsg sentMCMsg_;
+        CustomStrData toUECustomStr_;
+        CustomStrData fromUECustomStr_;
+        AttackState attackState_;
+        VehicleState vehicleState_;
     };
 }
 } // namespace

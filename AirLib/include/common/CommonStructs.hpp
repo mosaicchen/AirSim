@@ -443,6 +443,31 @@ namespace airlib
                                   external);
         }
     };
+
+    //Modified by machen
+
+    struct EnemyState
+    {
+        int enemy_type;
+        Pose location;
+        bool state;
+        TTimePoint timestamp;
+
+        EnemyState()
+        {
+        }
+
+        EnemyState(int enemy_type_val, const Pose& location_val, bool state_val, TTimePoint timestamp_val)
+            : enemy_type(enemy_type_val), location(location_val), state(state_val), timestamp(timestamp_val)
+        {
+        }
+    };
+
+    // struct EnemyData
+    // {
+    //     std::vector<EnemyState> indices;
+    //     TTimePoint timestamp;
+    // }
 }
 } //namespace
 #endif

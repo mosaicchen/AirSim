@@ -109,6 +109,80 @@ namespace airlib_rpclib
                     msg, timestamp);
             }
         };
+
+        struct CustomStrData
+        {
+            std::string str1;
+            std::string str2;
+            uint64_t timestamp;
+
+            MSGPACK_DEFINE_MAP(str1,str2, timestamp);
+
+            CustomStrData()
+            {
+            }
+
+            CustomStrData(const msr::airlib::CarApiBase::CustomStrData& s)
+            {
+                str1 = s.str1;
+                str2 = s.str2;
+                timestamp = s.timestamp;
+            }
+            msr::airlib::CarApiBase::CustomStrData to() const
+            {
+                return msr::airlib::CarApiBase::CustomStrData(
+                    str1, str2, timestamp);
+            }
+        };
+
+        
+        struct AttackState
+        {
+            bool isAttack;
+            uint64_t timestamp;
+
+            MSGPACK_DEFINE_MAP(isAttack, timestamp);
+
+            AttackState()
+            {
+            }
+
+            AttackState(const msr::airlib::CarApiBase::AttackState a)
+            {
+                isAttack = a.isAttack;
+                timestamp = a.timestamp;
+            }
+
+            msr::airlib::CarApiBase::AttackState to() const
+            {
+                return msr::airlib::CarApiBase::AttackState(
+                    isAttack, timestamp);
+            }
+        };
+
+        struct VehicleState
+        {
+            bool state = true;
+            uint64_t timestamp;
+
+            MSGPACK_DEFINE_MAP(state, timestamp);
+
+            VehicleState()
+            {
+            }
+
+            VehicleState(const msr::airlib::CarApiBase::VehicleState v)
+            {
+                state = v.state;
+                timestamp = v.timestamp;
+            }
+
+            msr::airlib::CarApiBase::VehicleState to() const
+            {
+                return msr::airlib::CarApiBase::VehicleState(
+                    state, timestamp);
+            }
+        };
     };
 }
 } //namespace

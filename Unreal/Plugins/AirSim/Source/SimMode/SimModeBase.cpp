@@ -941,3 +941,10 @@ void ASimModeBase::drawDistanceSensorDebugPoints()
 		}
 	}
 }
+
+//modified by machen 
+
+void ASimModeBase::setEnemyData(const TArray<FEnemyState>& newdata)
+{
+	enemy_data = newdata;
+}

@@ -911,6 +911,60 @@ namespace airlib_rpclib
                 return response_adapter;
             }
         };
+
+        //modified by machen
+
+        struct EnemyState
+        {
+            int enemy_type;
+            Pose location;
+            bool state;
+            msr::airlib::TTimePoint timestamp;
+
+            MSGPACK_DEFINE_MAP(enemy_type, location, state, timestamp);
+
+            EnemyState()
+            {
+            }
+
+            EnemyState(const msr::airlib::EnemyState& d)
+            {
+                enemy_type = d.enemy_type;
+                location = d.location;
+                state = d.state;
+                timestamp = d.timestamp;
+            }
+
+            msr::airlib::EnemyState to() const
+            {
+                msr::airlib::EnemyState d;
+                d.enemy_type = enemy_type;
+                d.location = location.to();
+                d.state = state;
+                d.timestamp = timestamp;
+
+                return d;
+            }
+
+            static std::vector<EnemyState> from(
+                const std::vector<msr::airlib::EnemyState>& request)
+            {
+                std::vector<EnemyState> request_adaptor;
+                for (const auto& item : request)
+                    request_adaptor.push_back(EnemyState(item));
+
+                return request_adaptor;
+            }
+            static std::vector<msr::airlib::EnemyState> to(
+                const std::vector<EnemyState>& request_adapter)
+            {
+                std::vector<msr::airlib::EnemyState> request;
+                for (const auto& item : request_adapter)
+                    request.push_back(item.to());
+
+                return request;
+            }
+        };
     };
 }
 } //namespace

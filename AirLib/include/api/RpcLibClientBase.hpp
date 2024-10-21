@@ -169,6 +169,11 @@ namespace airlib
 
         std::vector<std::string> simListAssets() const;
 
+        //modified by machen
+        Pose getPlatformLocation() const;
+
+        vector<EnemyState> getEnemyData() const;
+
     protected:
         void* getClient();
         const void* getClient() const;

@@ -1123,6 +1123,22 @@ class VehicleClient:
         """
         self.client.call('simSetExtForce', ext_force)
 
+    def getPlatformLocation(self):
+        """
+
+        Returns:
+            Pose
+        """
+        return self.client.call('getPlatformLocation')
+
+    def getEnemyData(self):
+        """
+
+        Returns:
+            list[EnemyState]
+        """
+        return self.client.call('getEnemyData')
+
 # -----------------------------------  Multirotor APIs ---------------------------------------------
 class MultirotorClient(VehicleClient, object):
     def __init__(self, ip = "", port = 41451, timeout_value = 3600):
@@ -1649,3 +1665,30 @@ class CarClient(VehicleClient, object):
 
         """
         self.client.call('setCarMCMsg', msg, vehicle_name)
+
+    def fromUECarCustomString(self, vehicle_name=''):
+        state_raw = self.client.call('fromUECarCustomString', vehicle_name)
+        return CustomStrData.from_msgpack(state_raw)
+        
+    def toUECarCustomString(self, data, vehicle_name=''):
+        self.client.call('toUECarCustomString', data, vehicle_name)
+
+    def getLiveState(self, vehicle_name=''):
+        """
+        Args:
+            vehicle_name (str, optional): Name of vehicle
+
+        Returns:
+            bool: is alive
+        """
+        state_raw = self.client.call('getLiveState', vehicle_name)
+        return VehicleState.from_msgpack(state_raw)
+    
+    def setAttack(self, isAttack, vehicle_name=''):
+        """
+        Args:
+            isAttack: bool
+        """
+        self.client.call('setAttack', isAttack, vehicle_name)
+
+

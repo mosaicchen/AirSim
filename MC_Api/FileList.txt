@@ -1,0 +1,17 @@
+AirLib\include\vehicles\car\api\CarApiBase.hpp:
+
+AirLib\include\vehicles\car\api\CarRpcLibAdaptors.hpp:
+
+AirLib\include\vehicles\car\api\CarRpcLibClient.hpp:
+
+AirLib\include\vehicles\car\firmwares\ardurover\ArduRoverApi.hpp:
+
+AirLib\include\vehicles\car\firmwares\physxcar\PhysXCarApi.hpp:
+
+AirLib\src\vehicles\car\api\CarRpcLibClient.cpp:
+
+AirLib\src\vehicles\car\api\CarRpcLibServer.cpp:
+
+PythonClient\airsim\client.py:
+
+PythonClient\airsim\types.py:

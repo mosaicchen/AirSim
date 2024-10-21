@@ -512,6 +512,18 @@ namespace airlib
             return getWorldSimApi()->getSettingsString();
         });
 
+        //modified by machen
+        
+        pimpl_->server.bind("getPlatformLocation", [&]() -> RpcLibAdaptorsBase::Pose {
+            const auto& pose = getWorldSimApi()->getPlatformLocation();
+            return RpcLibAdaptorsBase::Pose(pose);
+        });
+
+        pimpl_->server.bind("getEnemyData", [&]() -> vector<RpcLibAdaptorsBase::EnemyState> {
+            const auto& response = getWorldSimApi()->getEnemyData();
+            return RpcLibAdaptorsBase::EnemyState::from(response);
+        });
+
         //if we don't suppress then server will bomb out for exceptions raised by any method
         pimpl_->server.suppress_exceptions(true);
     }

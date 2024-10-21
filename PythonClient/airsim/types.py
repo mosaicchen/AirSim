@@ -394,6 +394,36 @@ class CarState(MsgpackMixin):
 class CarMCMsg(MsgpackMixin):
     msg = ""
     timestamp = np.uint64(0)
+
+class CustomFloatData(MsgpackMixin):
+    value = 0.0
+    timestamp = np.uint64(0)
+
+class CustomStrData(MsgpackMixin):
+    str1 = ""
+    str2 = ""
+    timestamp = np.uint64(0)
+
+class PlatformLocation(MsgpackMixin):
+    location = Pose()
+
+class EnemyState(MsgpackMixin):
+    enemy_type = 0
+    location = Pose()
+    state = True
+    timestamp = np.uint64(0)
+    
+# class EnemyData(MsgpackMixin):
+#     enemys = []
+#     timestamp = np.uint64(0)
+
+class AttackState(MsgpackMixin):
+    isAttack = False
+    timestamp = np.uint64(0)
+
+class VehicleState(MsgpackMixin):
+    state = True
+    timestamp = np.uint64(0)
     
 class MultirotorState(MsgpackMixin):
     collision = CollisionInfo()

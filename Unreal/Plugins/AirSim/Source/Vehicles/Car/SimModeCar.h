@@ -24,7 +24,7 @@ public:
     FString GetMCMsg(const FString& vehicle_name = "");
 
     UFUNCTION(BlueprintCallable)
-    void SendMCMsg(const FString& msg,const FString& vehicle_name = "");
+    void SendMCMsg(const FString& msg, const FString& vehicle_name = "");
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     bool bShowMCMsg = false;
@@ -32,6 +32,22 @@ public:
     FString recvMCMsg;
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     FString sentMCMsg;
+
+    UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+    void FromUEGetString(FString& outStr1, FString& outStr2, const FString& vehicle_name = "");
+    void FromUEGetString_Implementation(FString& outStr1, FString& outStr2, const FString& vehicle_name = "");
+
+    UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+    void ToUESetString(const FString& str1, const FString& str2, const FString& vehicle_name = "");
+    void ToUESetString_Implementation(const FString& str1, const FString& str2, const FString& vehicle_name = "");
+
+    UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+    bool GetVehicleAttackFromAPI( const FString& vehicle_name = "");
+    bool GetVehicleAttackFromAPI_Implementation( const FString& vehicle_name = "");
+
+    UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+    void SetVehicleStateToAPI(bool isAlive, const FString& vehicle_name = "");
+    void SetVehicleStateToAPI_Implementation(bool isAlive, const FString& vehicle_name = "");
 
     UPROPERTY()
     bool bIsApiControlled = false;

@@ -60,6 +60,20 @@ namespace airlib
         (static_cast<rpc::server*>(getServer()))->bind("getCarMCMsg", [&](const std::string& vehicle_name) -> CarRpcLibAdaptors::CarMCMsg {
             return CarRpcLibAdaptors::CarMCMsg(getVehicleApi(vehicle_name)->getCarMCMsg());
         });
+
+        (static_cast<rpc::server*>(getServer()))->bind("toUECarCustomString", [&](const CarRpcLibAdaptors::CustomStrData& data, const std::string& vehicle_name) -> void {
+            getVehicleApi(vehicle_name)->toUECarCustomString(data.to());
+        });
+        (static_cast<rpc::server*>(getServer()))->bind("fromUECarCustomString", [&](const std::string& vehicle_name) -> CarRpcLibAdaptors::CustomStrData {
+            return CarRpcLibAdaptors::CustomStrData(getVehicleApi(vehicle_name)->fromUECarCustomString());
+        });
+
+        (static_cast<rpc::server*>(getServer()))->bind("setAttack", [&](const CarRpcLibAdaptors::AttackState& data, const std::string& vehicle_name) -> void {
+            getVehicleApi(vehicle_name)->setAttack(data.to());
+        });
+        (static_cast<rpc::server*>(getServer()))->bind("getVehicleState", [&](const std::string& vehicle_name) -> CarRpcLibAdaptors::VehicleState {
+            return CarRpcLibAdaptors::VehicleState(getVehicleApi(vehicle_name)->getVehicleState());
+        });
     }
 
     //required for pimpl

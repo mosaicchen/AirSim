@@ -128,6 +128,11 @@ namespace airlib
         virtual void setDetectionFilterRadius(ImageCaptureBase::ImageType image_type, float radius_cm, const CameraDetails& camera_details) = 0;
         virtual void clearDetectionMeshNames(ImageCaptureBase::ImageType image_type, const CameraDetails& camera_details) = 0;
         virtual std::vector<DetectionInfo> getDetections(ImageCaptureBase::ImageType image_type, const CameraDetails& camera_details) = 0;
+
+        //modified by machen
+        virtual Pose getPlatformLocation() const = 0;
+
+        virtual vector<EnemyState> getEnemyData() const = 0;
     };
 }
 } //namespace

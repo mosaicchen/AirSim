@@ -648,6 +648,19 @@ __pragma(warning(disable : 4239))
         {
             return &pimpl_->client;
         }
+
+        //modified by machen
+
+        Pose msr::airlib::RpcLibClientBase::getPlatformLocation() const
+        {
+            return pimpl_->client.call("getPlatformLocation").as<RpcLibAdaptorsBase::Pose>().to();
+        }
+
+        vector<EnemyState> msr::airlib::RpcLibClientBase::getEnemyData() const
+        {
+            const auto& result = pimpl_->client.call("getEnemyData").as<std::vector<RpcLibAdaptorsBase::EnemyState>>();
+            return RpcLibAdaptorsBase::EnemyState::to(result);
+        }
     }
 } //namespace
 

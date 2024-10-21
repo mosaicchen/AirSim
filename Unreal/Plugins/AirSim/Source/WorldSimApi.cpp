@@ -1100,3 +1100,23 @@ std::vector<msr::airlib::DetectionInfo> WorldSimApi::getDetections(ImageCaptureB
 
     return result;
 }
+
+msr::airlib::Pose WorldSimApi::getPlatformLocation() const
+{
+    return Pose();
+}
+
+std::vector<msr::airlib::EnemyState> WorldSimApi::getEnemyData() const
+{
+    std::vector<msr::airlib::EnemyState> result;
+    TArray<FEnemyState> data = simmode_->getEnemyData();
+    result.resize(data.Num());
+
+    for (int i = 0; i < data.Num(); i++) {
+        result[i].enemy_type=data[i].enemy_type;
+        result[i].location=data[i].location
+        result[i].state=data[i].state;
+    }
+
+    return result;
+}

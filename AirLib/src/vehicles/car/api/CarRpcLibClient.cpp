@@ -76,6 +76,24 @@ __pragma(warning(disable : 4239))
         {
             return static_cast<rpc::client*>(getClient())->call("getCarMCMsg").as<CarRpcLibAdaptors::CarMCMsg>().to();
         }
+        
+        void CarRpcLibClient::toUECarCustomString(const CarApiBase::CustomStrData& data, const std::string& vehicle_name)
+        {
+            static_cast<rpc::client*>(getClient())->call("toUECarCustomString", CarRpcLibAdaptors::CustomStrData(data), vehicle_name);
+        }
+        CarApiBase::CustomStrData CarRpcLibClient::fromUECarCustomString()
+        {
+            return static_cast<rpc::client*>(getClient())->call("fromUECarCustomString").as<CarRpcLibAdaptors::CustomStrData>().to();
+        }
+        
+        void CarRpcLibClient::setAttack(const CarApiBase::AttackState& data, const std::string& vehicle_name)
+        {
+            static_cast<rpc::client*>(getClient())->call("setAttack", CarRpcLibAdaptors::AttackState(data), vehicle_name);
+        }
+        CarApiBase::VehicleState CarRpcLibClient::getVehicleState(const std::string& vehicle_name)
+        {
+            return static_cast<rpc::client*>(getClient())->call("getVehicleState", vehicle_name).as<CarRpcLibAdaptors::VehicleState>().to();
+        }
 
     }
 } //namespace

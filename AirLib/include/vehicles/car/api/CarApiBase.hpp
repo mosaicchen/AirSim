@@ -105,6 +105,95 @@ namespace airlib
             }
         };
 
+        struct CustomFloatData
+        {
+            float value;
+            uint64_t timestamp;
+
+            CustomFloatData()
+            {
+            }
+
+            CustomFloatData(float float_val, uint64_t timestamp_val)
+                :  value(float_val), timestamp(timestamp_val)
+            {
+            }
+
+            //shortcuts
+            const float& getValue() const
+            {
+                return value;
+            }
+        };
+
+        struct CustomStrData
+        {
+            string str1;
+            string str2;
+            uint64_t timestamp;
+
+            CustomStrData()
+            {
+            }
+
+            CustomStrData(string str_val1, string str_val2, uint64_t timestamp_val)
+                :  str1(str_val1),str2(str_val2), timestamp(timestamp_val)
+            {
+            }
+
+            //shortcuts
+            const string& getStr1() const
+            {
+                return str1;
+            }
+            const string& getStr2() const
+            {
+                return str2;
+            }
+        };
+
+        struct AttackState
+        {
+            bool isAttack;
+            uint64_t timestamp;
+
+            AttackState()
+            {
+            }
+
+            AttackState(bool attack_val, uint64_t timestamp_val)
+                :  isAttack(attack_val), timestamp(timestamp_val)
+            {
+            }
+
+            //shortcuts
+            const bool& getIsAttack() const
+            {
+                return isAttack;
+            }
+        };
+
+        struct VehicleState
+        {
+            bool state = true;
+            uint64_t timestamp;
+
+            VehicleState()
+            {
+            }
+
+            VehicleState(bool state_val, uint64_t timestamp_val)
+                :  state(state_val), timestamp(timestamp_val)
+            {
+            }
+
+            //shortcuts
+            const bool& getState() const
+            {
+                return state;
+            }
+        };
+
     public:
         // TODO: Temporary constructor for the Unity implementation which does not use the new Sensor Configuration Settings implementation.
         //CarApiBase() {}
@@ -171,6 +260,15 @@ namespace airlib
         virtual void sendCarMCMsg(const CarMCMsg& msg) = 0;
         virtual const CarMCMsg getRecvCarMCMsg() const = 0;
         virtual const CarMCMsg getSentCarMCMsg() const = 0;
+
+        virtual void toUECarCustomString(const CustomStrData& data) = 0;
+        virtual const CustomStrData& fromUECarCustomString() const = 0;
+
+        virtual void setAttack(const AttackState& data) = 0;
+        virtual const AttackState& getAttackState() const = 0;
+
+        virtual const VehicleState& getVehicleState() const = 0;
+        virtual void updateVehicleState(const VehicleState state) = 0;
 
 
         virtual ~CarApiBase() = default;

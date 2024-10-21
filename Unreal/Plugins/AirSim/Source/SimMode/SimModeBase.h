@@ -20,6 +20,20 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FLevelLoaded);
 
+USTRUCT(BlueprintType)
+struct FEnemyState
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int enemy_type;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FTransform location;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool state;
+};
+
+
 UCLASS()
 class AIRSIM_API ASimModeBase : public AActor
 {
@@ -120,11 +134,26 @@ public:
     }
 
     const UnrealImageCapture* getImageCapture(const std::string& vehicle_name = "", bool external = false) const;
+    
+    
+    //modified by machen
+
+    UFUNCTION(BlueprintCallable, Category = "Machen")
+    void setEnemyData(const TArray<FEnemyState>& newdata);
+    
+    UFUNCTION(BlueprintCallable, Category = "Machen")
+    TArray<FEnemyState> getEnemyData()
+    {
+        return enemy_data;
+    }
+
 
     TMap<FString, FAssetData> asset_map;
     TMap<FString, AActor*> scene_object_map;
     TMap<FString, AActor*> cache_object_map;
     UMaterial* domain_rand_material_;
+
+    TArray<FEnemyState> enemy_data;
 
 protected: //must overrides
     typedef msr::airlib::AirSimSettings AirSimSettings;
