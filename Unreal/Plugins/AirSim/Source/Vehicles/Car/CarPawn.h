@@ -82,8 +82,12 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FApiControlEvent ApiControlEvent;
+	//Í¬²½ÓÃ
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool WreckState;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float RotatorSpeed;
 	//
-
 	UPROPERTY(BlueprintReadWrite)
 	int Id;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -112,7 +116,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetMoveData(FVector in_Point, FRotator in_rotator, float LWheelSpeed, float RWheelSpeed, bool in_Phsics);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	void GetData(int& ou_id, FVector& pos, FRotator& Rot, float& LWheelSpeed, float& RWheelSpeed);
+	void GetData(int& out_id, int& out_objectId, FVector& pos, FRotator& Rot, float& LWheelSpeed, float& RWheelSpeed, float& out_rotatorSpeed, bool& state);
 
 	//PID
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -133,6 +137,11 @@ public:
 	float InKiR;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float InKdR;
+
+	//Test
+	//UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	//float INPLTT;
+
 	//
 	void onReversePressed();
 	void onReverseReleased();

@@ -73,6 +73,10 @@ void CarPawnApi::updateMovement(const msr::airlib::CarApiBase::CarControls& cont
 		localF = pawn_->TestMoveSpeed * (FMath::Sign(controls.throttle));
 	}
 
+	//CVMC->SetPitchInput(pawn_->INPLTT * 100.0f);
+//	CVMC->TargetRotationControl.PitchControlScaling = pawn_->INPLTT;
+	CVMC->Update(CVMC->GetWorld()->GetDeltaSeconds());
+
 	UKismetSystemLibrary::PrintString(CVMC, "SetSpeed:" + FString::FromInt(localF), true, false, FLinearColor::Green, 0.0f);
 	UKismetSystemLibrary::PrintString(CVMC, "CurrentMoveSpeed:" + FString::FromInt(movement_->GetForwardSpeed()), true, false, FLinearColor::Green, 0.0f);
 	UKismetSystemLibrary::PrintString(CVMC, "InputRoator:" + FString::FromInt(controls.steering), true, false, FLinearColor::Green, 0.0f);

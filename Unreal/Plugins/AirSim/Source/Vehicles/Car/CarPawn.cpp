@@ -277,14 +277,17 @@ void ACarPawn::BeginPlay()
 	engine_sound_audio_->Play();
 }
 
-void ACarPawn::GetData(int& ou_id, FVector& pos, FRotator& Rot, float& LWheelSpeed, float& RWheelSpeed)
+void ACarPawn::GetData(int& out_id, int& out_objectId, FVector& pos, FRotator& Rot, float& LWheelSpeed, float& RWheelSpeed, float& out_rotatorSpeed, bool& state)
 {
-	ou_id = Id;
+	out_id = Id;
+	state = WreckState;
 	pos = this->GetActorLocation();
 	Rot = this->GetActorRotation();
 	UChaosWheeledVehicleMovementComponent* movement = CastChecked<UChaosWheeledVehicleMovementComponent>(getVehicleMovementComponent());
 	LWheelSpeed = movement->Wheels[0]->GetWheelAngularVelocity();
 	RWheelSpeed = movement->Wheels[1]->GetWheelAngularVelocity();
+	out_rotatorSpeed = RotatorSpeed;
+	out_objectId = ObjectType;
 }
 
 void ACarPawn::updateHUDStrings()
@@ -352,7 +355,7 @@ void ACarPawn::setupInputBindings()
 	//UKismetSystemLibrary::PrintString(this, "this name" + this->GetName());
 
 
-	
+
 	UAirBlueprintLib::EnableInput(this);
 
 	//UAirBlueprintLib::BindAxisToKey(FInputAxisKeyMapping("MoveForward", EKeys::Y, 1), this, this, &ACarPawn::onMoveForward);

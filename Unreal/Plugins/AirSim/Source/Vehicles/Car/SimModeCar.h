@@ -20,18 +20,18 @@ public:
     virtual void continueForTime(double seconds) override;
     virtual void continueForFrames(uint32_t frames) override;
 
-    UFUNCTION(BlueprintCallable)
-    FString GetMCMsg(const FString& vehicle_name = "");
+    // UFUNCTION(BlueprintCallable)
+    // FString GetMCMsg(const FString& vehicle_name = "");
 
-    UFUNCTION(BlueprintCallable)
-    void SendMCMsg(const FString& msg, const FString& vehicle_name = "");
+    // UFUNCTION(BlueprintCallable)
+    // void SendMCMsg(const FString& msg, const FString& vehicle_name = "");
 
-    UPROPERTY(BlueprintReadWrite, EditAnywhere)
-    bool bShowMCMsg = false;
-    UPROPERTY(BlueprintReadWrite, EditAnywhere)
-    FString recvMCMsg;
-    UPROPERTY(BlueprintReadWrite, EditAnywhere)
-    FString sentMCMsg;
+    // UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    // bool bShowMCMsg = false;
+    // UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    // FString recvMCMsg;
+    // UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    // FString sentMCMsg;
 
     UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
     void FromUEGetString(FString& outStr1, FString& outStr2, const FString& vehicle_name = "");

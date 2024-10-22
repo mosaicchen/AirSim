@@ -147,6 +147,7 @@ void CarPawnSimApi::updateCarControls()
     UAirBlueprintLib::LogMessageString("Steering: ", std::to_string(current_controls_.steering), LogDebugLevel::Informational);
     UAirBlueprintLib::LogMessageString("Handbrake: ", std::to_string(current_controls_.handbrake), LogDebugLevel::Informational);
     UAirBlueprintLib::LogMessageString("Target Gear: ", std::to_string(current_controls_.manual_gear), LogDebugLevel::Informational);
+    UAirBlueprintLib::LogMessageString("is_manual_gear: ", std::to_string(current_controls_.is_manual_gear), LogDebugLevel::Informational);
 }
 
 //*** Start: UpdatableState implementation ***//

@@ -80,7 +80,7 @@ void ASimModeCar::FromUEGetString_Implementation(FString& outStr1, FString& outS
     if (car_sim_api != nullptr) {
         auto car_api = car_sim_api->getVehicleApi();
         if (car_api != nullptr) {
-            auto data = car_sim_api->getVehicleApi()->getCarCustomString();
+            auto data = car_sim_api->getVehicleApi()->fromUECarCustomString();
             //std::string to FString
             outStr1 = FString(data.str1.c_str());
             outStr2 = FString(data.str2.c_str());
@@ -107,10 +107,10 @@ void ASimModeCar::ToUESetString_Implementation(const FString& str1, const FStrin
         s1,
         s2,
         car_sim_api->getVehicleApi()->clock()->nowNanos());
-    car_sim_api->getVehicleApi()->setUECarCustomString(csd);
+    car_sim_api->getVehicleApi()->toUECarCustomString(csd);
 }
 
-bool GetVehicleAttackFromAPI_Implementation(const FString& vehicle_name = "")
+bool ASimModeCar::GetVehicleAttackFromAPI_Implementation(const FString& vehicle_name)
 {
     //FString to std::string
     std::string vname(TCHAR_TO_UTF8(*vehicle_name));
@@ -127,7 +127,7 @@ bool GetVehicleAttackFromAPI_Implementation(const FString& vehicle_name = "")
     return false;
 }
 
-void SetVehicleStateToAPI_Implementation(bool isAlive, const FString& vehicle_name = "")
+void ASimModeCar::SetVehicleStateToAPI_Implementation(bool isAlive, const FString& vehicle_name)
 {
     std::string vname(TCHAR_TO_UTF8(*vehicle_name));
 
