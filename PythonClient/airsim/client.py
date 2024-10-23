@@ -1673,7 +1673,7 @@ class CarClient(VehicleClient, object):
     def toUECarCustomString(self, data, vehicle_name=''):
         self.client.call('toUECarCustomString', data, vehicle_name)
 
-    def getLiveState(self, vehicle_name=''):
+    def getVehicleState(self, vehicle_name=''):
         """
         Args:
             vehicle_name (str, optional): Name of vehicle
@@ -1681,7 +1681,7 @@ class CarClient(VehicleClient, object):
         Returns:
             bool: is alive
         """
-        state_raw = self.client.call('getLiveState', vehicle_name)
+        state_raw = self.client.call('getVehicleState', vehicle_name)
         return VehicleState.from_msgpack(state_raw)
     
     def setAttack(self, isAttack, vehicle_name=''):
