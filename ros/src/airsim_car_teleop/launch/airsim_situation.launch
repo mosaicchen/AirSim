@@ -3,9 +3,9 @@
   <arg name="host" default="192.168.1.105" />
   <arg name="vehicle_name" default="drone_1" />
   <arg name="drone_id" default="1" />
-  <arg name="name" default="airsim_situation_control" />
+  <arg name="name" default="airsim_situation" />
 
-  <node pkg="airsim_car_teleop" type="airsim_situation_control" name="$(arg name)"  output="screen">
+  <node pkg="airsim_car_teleop" type="airsim_situation" name="$(arg name)"  output="screen">
   	<param name="host_ip" type="string" value="$(arg host)" />
   	<param name="vehicle_name" type="string" value="$(arg vehicle_name)" />
   	<param name="drone_id" type="string" value="$(arg drone_id)" />

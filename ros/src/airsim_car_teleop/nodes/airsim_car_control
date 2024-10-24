@@ -4,6 +4,7 @@ import math
 import rospy
 from geometry_msgs.msg import TwistStamped
 from nav_msgs.msg import Odometry
+from std_msgs.msg import String, Bool
 
 import sys
 import os
@@ -12,13 +13,12 @@ import os
 # 获取当前脚本的目录
 current_dir = os.path.dirname(os.path.abspath(__file__))
 # 构建从当前目录到airsim库目录的相对路径
-relative_path = os.path.join(current_dir, '..', '..', '..', '..',
-                             'PythonClient')
+relative_path = os.path.join(current_dir, '..', '..', '..', '..', 'PythonClient')
 # 将相对路径添加到sys.path中
 sys.path.append(relative_path)
 # 现在你可以导入airsim模块了
 import airsim
-from airsim.types import Pose
+from airsim.types import Pose,AttackState
 
 car_name = "drone_1"
 
@@ -176,6 +176,16 @@ def odom_callback(odom_msg):
     odom_pub.publish(odom)
 
 
+def attack_callback(isAttack):
+    client = airsim.CarClient(ip=host_ip)
+    client.confirmConnection()
+    
+    attackState = AttackState()
+    attackState.isAttack = isAttack.data
+    
+    client.setAttack(attackState,car_name)
+
+
 def main():
     global max_linear_speed, max_angular_speed
     global host_ip, car_name
@@ -204,6 +214,9 @@ def main():
     sub_topic = rospy.get_param('~input_control_topic', '/ant01/cmd_vel')
 
     rospy.Subscriber(sub_topic, TwistStamped, twist_stamped_callback)
+
+    sub_attack_topic ="/airsim_node/" + car_name + "/suicide_attack"
+    rospy.Subscriber(sub_attack_topic, Bool, attack_callback)
 
     car_id = rospy.get_param('~car_id', '1')
     odom_pub_topic = "/ant0" + car_id + "/state_estimation_ue4"

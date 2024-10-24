@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 import rospy
-from nav_msgs.msg import Odometry
+import json
+from std_msgs.msg import String, Bool
+from geometry_msgs.msg import Point
 
 import sys
 import os
@@ -16,10 +18,21 @@ relative_path = os.path.join(current_dir, '..', '..', '..', '..', 'PythonClient'
 sys.path.append(relative_path)
 # 现在你可以导入airsim模块了
 import airsim
+from airsim import types
 
 class UEROSBridge:
     def __init__(self, host_ip, vehicle_name):
         self.vehicle_name = vehicle_name
+        
+        state_pub_topic = "airsim_node/" + vehicle_name + "/vehicle_state"
+        state_pub = rospy.Publisher(state_pub_topic, Bool, queue_size=10)
+
+        isCollided_pub_topic = "/airsim_node/" + vehicle_name + "/is_collided"
+        isCollided_pub = rospy.Publisher(isCollided_pub_topic, Bool, queue_size=10)
+
+        collisionInfo_pub_topic =  "/airsim_node/" + vehicle_name + "/collide_point"
+        collisionInfo_pub = rospy.Publisher(collisionInfo_pub_topic, Point, queue_size=10)
+
         
         # 初始化AirSim客户端
         global client
@@ -29,12 +42,22 @@ class UEROSBridge:
         # 注册关闭回调函数
         rospy.on_shutdown(self.shutdown_callback)
 
+        rate = rospy.Rate(30)
+
         while not rospy.is_shutdown():
             isAlive = client.getVehicleState(vehicle_name)
-            # print(isAlive)
-            time.sleep(0.01)
-            enemys = client.getEnemyData()
-            print(enemys)
+            
+            state_pub.publish(isAlive.state)
+
+            collisionInfo = client.simGetCollisionInfo(vehicle_name)
+            
+            isCollided_pub.publish(collisionInfo.has_collided)
+
+            # collisionInfo_pub.publish(String(json.dumps(collisionInfo)))
+            
+            collisionInfo_pub.publish(Point(collisionInfo.position.x_val,collisionInfo.position.y_val,collisionInfo.position.z_val))
+
+            rate.sleep()
 
     def shutdown_callback(self):
         # 在这里添加任何需要在程序关闭时执行的清理操作
