@@ -210,8 +210,13 @@ def main():
 
     # host_ip="127.0.0.1"
     host_ip = rospy.get_param('~host_ip', 'localhost')
+    
+    car_id = rospy.get_param('~car_id', '1')
 
-    car_name = rospy.get_param('~car_name', 'drone_1')
+    # car_name = rospy.get_param('~car_name', 'drone_1')
+    car_param_name = rospy.get_param('~car_name', 'drone_1')
+    ip_parts = host_ip.split('.')
+    car_name = f"drone_{ip_parts[-1]}_{car_id}"
 
     global client
     client = airsim.CarClient(ip=host_ip)
@@ -234,7 +239,6 @@ def main():
     sub_attack_topic ="/airsim_node/" + car_name + "/suicide_attack"
     rospy.Subscriber(sub_attack_topic, Bool, attack_callback)
 
-    car_id = rospy.get_param('~car_id', '1')
     odom_pub_topic = "/ant0" + car_id + "/state_estimation_ue4"
     odom_pub = rospy.Publisher(odom_pub_topic, Odometry, queue_size=10)
 

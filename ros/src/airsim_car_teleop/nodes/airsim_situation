@@ -19,8 +19,7 @@ sys.path.append(relative_path)
 import airsim
 
 class UEROSBridge:
-    def __init__(self, host_ip, vehicle_name):
-        self.vehicle_name = vehicle_name
+    def __init__(self, host_ip):
         
         state_pub_topic = "airsim_node/enemy_state"
         state_pub = rospy.Publisher(state_pub_topic, String, queue_size=10)
@@ -52,10 +51,8 @@ if __name__ == '__main__':
 
     # host_ip="127.0.0.1"
     host_ip = rospy.get_param('~host_ip', 'localhost')
-    
-    vehicle_name = rospy.get_param('~vehicle_name', 'drone_1')
 
     # 创建UEROSBridge实例
-    bridge = UEROSBridge(host_ip, vehicle_name)
+    bridge = UEROSBridge(host_ip)
 
     rospy.spin()

@@ -71,7 +71,13 @@ if __name__ == '__main__':
     # host_ip="127.0.0.1"
     host_ip = rospy.get_param('~host_ip', 'localhost')
     
-    vehicle_name = rospy.get_param('~vehicle_name', 'drone_1')
+    # 获取参数drone_id
+    drone_id = rospy.get_param('~drone_id', 0)
+
+    vehicle_param_name = rospy.get_param('~vehicle_name', 'drone_1')
+    ip_parts = host_ip.split('.')
+
+    vehicle_name = f"drone_{ip_parts[-1]}_{drone_id}"
 
     # 创建UEROSBridge实例
     bridge = UEROSBridge(host_ip, vehicle_name)
