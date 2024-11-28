@@ -154,7 +154,7 @@ namespace airlib
 
         struct AttackState
         {
-            bool isAttack;
+            bool isAttack = false;
             uint64_t timestamp;
 
             AttackState()

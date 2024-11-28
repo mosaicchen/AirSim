@@ -151,7 +151,7 @@ namespace airlib
         CarMCMsg sentMCMsg_;
         CustomStrData toUECustomStr_;
         CustomStrData fromUECustomStr_;
-        AttackState attackState_;
+        AttackState attackState_ = AttackState(false,0);
         VehicleState vehicleState_;
     };
 }

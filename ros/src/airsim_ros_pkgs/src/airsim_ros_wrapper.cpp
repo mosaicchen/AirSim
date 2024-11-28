@@ -730,7 +730,8 @@ nav_msgs::Odometry AirsimROSWrapper::get_odom_msg_from_multirotor_state(const ms
 sensor_msgs::PointCloud2 AirsimROSWrapper::get_lidar_msg_from_airsim(const msr::airlib::LidarData& lidar_data, const std::string& vehicle_name, const std::string& sensor_name) const
 {
     sensor_msgs::PointCloud2 lidar_msg;
-    lidar_msg.header.stamp = ros::Time::now();
+    // lidar_msg.header.stamp = ros::Time::now();
+    lidar_msg.header.stamp = airsim_timestamp_to_ros(lidar_data.time_stamp);
     lidar_msg.header.frame_id = vehicle_name + "/" + sensor_name;
 
     if (lidar_data.point_cloud.size() > 3) {

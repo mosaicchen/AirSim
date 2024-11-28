@@ -1,0 +1,22 @@
+<launch>
+
+<!-- AirSim ROS Wrapper -->
+	<include file="$(find airsim_ros_pkgs)/launch/airsim_node.launch"/>
+	
+	<!-- 当前launch文件中节点 -->
+	<node name="car_control" pkg="airsim_car_teleop" type="airsim_car_control">
+	<!-- 传递参数给当前launch文件中的节点 -->
+  	</node>
+  	
+	<node name="drone_teleport" pkg="airsim_car_teleop" type="airsim_drone_teleport">
+	<!-- 传递参数给当前launch文件中的节点 -->
+  	</node>
+  	
+	<node name="situation" pkg="airsim_car_teleop" type="airsim_situation">
+	<!-- 传递参数给当前launch文件中的节点 -->
+  	</node>
+  	
+	<node name="vehicle_state" pkg="airsim_car_teleop" type="airsim_vehicle_state">
+	<!-- 传递参数给当前launch文件中的节点 -->
+  	</node>
+</launch>

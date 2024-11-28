@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 import rospy
 from nav_msgs.msg import Odometry
 
@@ -15,6 +16,7 @@ relative_path = os.path.join(current_dir, '..', '..', '..', '..', 'PythonClient'
 sys.path.append(relative_path)
 # 现在你可以导入airsim模块了
 import airsim
+from airsim.types import Pose
 
 class UEROSBridge:
     def __init__(self,host_ip, drone_id,vehicle_name):
@@ -29,6 +31,7 @@ class UEROSBridge:
         global drone_tag
         drone_tag = "drone_{}".format(drone_id)
 
+
         # 根据drone_id配置Odom话题名称
         drone_pos_sub_topic = "/airsim_node/drone_{}/set_location".format(drone_id)
         
@@ -38,18 +41,36 @@ class UEROSBridge:
         # 发布Odom信息到Planner
         self.pub = rospy.Publisher("/drone_{}".format(drone_id), Odometry, queue_size=100)
 
-    def odom_callback(self, msg):
-        # 发布Odom信息到Planner
-        # TODO 坐标转换
-        self.pub.publish(msg)
+    # def odom_callback(self, msg):
+    #     # 发布Odom信息到Planner
+    #     # TODO 坐标转换
+    #     self.pub.publish(msg)
     
     def alg_odom_callback(self, msg):
         # 发布Odom信息到Planner
         # TODO 坐标转换
-        pose = msg.pose
+        #pose = msg.pose
+        pose = Pose()
+        pose.position.x_val = msg.pose.pose.position.x
+        pose.position.y_val = msg.pose.pose.position.y
+        pose.position.z_val = msg.pose.pose.position.z
+        
+        pose.orientation.w_val = msg.pose.pose.orientation.w
+        pose.orientation.x_val = msg.pose.pose.orientation.x
+        pose.orientation.y_val = msg.pose.pose.orientation.y
+        pose.orientation.z_val = msg.pose.pose.orientation.z
         # pose.position = car_state.kinematics_estimated.position 
-        # pose.orientation = car_state.kinematics_estimated.orientation 
-        client.simSetObjectPose(drone_tag,pose)
+        # pose.orientation = car_state.kinematics_estimated.orientation
+
+        #pose2 = pose
+        #pose2.position.x_val = msg.pose.pose.position.x+5
+        #pose3 = pose
+        #pose3.position.x_val = msg.pose.pose.position.x+10
+        
+        #client.simSetObjectPose(drone_tag,pose)
+        client.simSetObjectPose(drone_tag+"_Point",pose)
+        #client.simSetObjectPose("UAV_Point2",pose2)
+        #client.simSetObjectPose("UAV_Point3",pose3)
 
 if __name__ == '__main__':
     rospy.init_node('ue_to_ros_bridge')
@@ -66,3 +87,69 @@ if __name__ == '__main__':
     bridge = UEROSBridge(host_ip,drone_id,vehicle_name)
 
     rospy.spin()
+# import rospy
+# from nav_msgs.msg import Odometry
+
+# import sys
+# import os
+# # import airsim
+
+# # 获取当前脚本的目录
+# current_dir = os.path.dirname(os.path.abspath(__file__))
+# # 构建从当前目录到airsim库目录的相对路径
+# relative_path = os.path.join(current_dir, '..', '..', '..', '..', 'PythonClient')
+# # 将相对路径添加到sys.path中
+# sys.path.append(relative_path)
+# # 现在你可以导入airsim模块了
+# import airsim
+
+# class UEROSBridge:
+#     def __init__(self,host_ip, drone_id,vehicle_name):
+#         self.drone_id = drone_id
+#         self.vehicle_name = vehicle_name
+        
+#         # 初始化AirSim客户端
+#         global client
+#         client = airsim.CarClient(ip=host_ip)
+#         client.confirmConnection()
+
+#         global drone_tag
+#         drone_tag = "drone_{}".format(drone_id)
+
+#         # 根据drone_id配置Odom话题名称
+#         drone_pos_sub_topic = "/airsim_node/drone_{}/set_location".format(drone_id)
+        
+#         # 订阅算法发送的Odom信息
+#         self.sub = rospy.Subscriber(drone_pos_sub_topic, Odometry, self.alg_odom_callback)
+
+#         # 发布Odom信息到Planner
+#         self.pub = rospy.Publisher("/drone_{}".format(drone_id), Odometry, queue_size=100)
+
+#     def odom_callback(self, msg):
+#         # 发布Odom信息到Planner
+#         # TODO 坐标转换
+#         self.pub.publish(msg)
+    
+#     def alg_odom_callback(self, msg):
+#         # 发布Odom信息到Planner
+#         # TODO 坐标转换
+#         pose = msg.pose
+#         # pose.position = car_state.kinematics_estimated.position 
+#         # pose.orientation = car_state.kinematics_estimated.orientation 
+#         client.simSetObjectPose(drone_tag,pose)
+
+# if __name__ == '__main__':
+#     rospy.init_node('ue_to_ros_bridge')
+
+#     # host_ip="127.0.0.1"
+#     host_ip=rospy.get_param('~host_ip','localhost')
+
+#     # 获取参数drone_id
+#     drone_id = rospy.get_param('~drone_id', 0)
+    
+#     vehicle_name = rospy.get_param('~vehicle_name', 'drone_1')
+
+#     # 创建UEROSBridge实例
+#     bridge = UEROSBridge(host_ip,drone_id,vehicle_name)
+
+#     rospy.spin()

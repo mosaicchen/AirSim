@@ -56,8 +56,8 @@ def twist_stamped_callback(twist_stamped_msg):
     shouldSendControl = True
 
     # 初始化AirSim客户端
-    client = airsim.CarClient(ip=host_ip)
-    client.confirmConnection()
+    # client = airsim.CarClient(ip=host_ip)
+    # client.confirmConnection()
 
     # 获取目标线速度和角速度
     target_linear_velocity = twist_stamped_msg.twist.linear.x
@@ -175,10 +175,24 @@ def odom_callback(odom_msg):
 
     odom_pub.publish(odom)
 
+    pose = client.simGetObjectPose(car_name)
+    global_odom = odom
+    global_odom.pose.pose.position.x = pose.position.x_val
+    global_odom.pose.pose.position.y = pose.position.y_val
+    global_odom.pose.pose.position.z = pose.position.z_val
+    
+    global_odom.pose.pose.orientation.w = pose.orientation.w_val
+    global_odom.pose.pose.orientation.x = pose.orientation.x_val
+    global_odom.pose.pose.orientation.y = pose.orientation.y_val
+    global_odom.pose.pose.orientation.z = pose.orientation.z_val
+
+    global_loc_pub.publish(global_odom)
+    # print(pose)
+
 
 def attack_callback(isAttack):
-    client = airsim.CarClient(ip=host_ip)
-    client.confirmConnection()
+    # client = airsim.CarClient(ip=host_ip)
+    # client.confirmConnection()
     
     attackState = AttackState()
     attackState.isAttack = isAttack.data
@@ -189,7 +203,7 @@ def attack_callback(isAttack):
 def main():
     global max_linear_speed, max_angular_speed
     global host_ip, car_name
-    global odom_pub
+    global odom_pub,global_loc_pub
 
     max_linear_speed = 50
     max_angular_speed = 150
@@ -199,7 +213,9 @@ def main():
 
     car_name = rospy.get_param('~car_name', 'drone_1')
 
-    # host_ip=rospy.get_param('~host_ip','localhost')
+    global client
+    client = airsim.CarClient(ip=host_ip)
+    client.confirmConnection()
 
     # 获取车辆的最大线速度和最大角速度
     max_linear_speed = rospy.get_param('/airsim_node/max_linear_speed',
@@ -221,6 +237,9 @@ def main():
     car_id = rospy.get_param('~car_id', '1')
     odom_pub_topic = "/ant0" + car_id + "/state_estimation_ue4"
     odom_pub = rospy.Publisher(odom_pub_topic, Odometry, queue_size=10)
+
+    global_loc_pub_topic = "/airsim_node/" + car_name + "/global_location"
+    global_loc_pub = rospy.Publisher(global_loc_pub_topic, Odometry, queue_size=10)
 
     use_enu = rospy.get_param('~use_enu', True)
     odom_suffix = "enu" if use_enu else "ned"
